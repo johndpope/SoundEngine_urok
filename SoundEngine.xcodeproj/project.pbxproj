@@ -1,0 +1,481 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		80002C6D20BF240300A1AD0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C6C20BF240300A1AD0C /* AppDelegate.swift */; };
+		80002C7120BF240400A1AD0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80002C7020BF240400A1AD0C /* Assets.xcassets */; };
+		80002C7420BF240400A1AD0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 80002C7220BF240400A1AD0C /* Main.storyboard */; };
+		80002CA320BF240400A1AD0C /* AlgorithmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C7D20BF240400A1AD0C /* AlgorithmCell.swift */; };
+		80002CA420BF240400A1AD0C /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C7E20BF240400A1AD0C /* Graph.swift */; };
+		80002CA520BF240400A1AD0C /* MainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C7F20BF240400A1AD0C /* MainCell.swift */; };
+		80002CA620BF240400A1AD0C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8020BF240400A1AD0C /* MainVC.swift */; };
+		80002CA820BF240400A1AD0C /* bridgeClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8520BF240400A1AD0C /* bridgeClass.mm */; };
+		80002CA920BF240400A1AD0C /* DetectingData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8720BF240400A1AD0C /* DetectingData.mm */; };
+		80002CAA20BF240400A1AD0C /* DetectMgr.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8920BF240400A1AD0C /* DetectMgr.mm */; };
+		80002CAB20BF240400A1AD0C /* Engine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8B20BF240400A1AD0C /* Engine.mm */; };
+		80002CAC20BF240400A1AD0C /* FFT.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8E20BF240400A1AD0C /* FFT.mm */; };
+		80002CAD20BF240400A1AD0C /* FourierTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9020BF240400A1AD0C /* FourierTransform.mm */; };
+		80002CAE20BF240400A1AD0C /* globals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9120BF240400A1AD0C /* globals.cpp */; };
+		80002CAF20BF240400A1AD0C /* NSObject+testBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9520BF240400A1AD0C /* NSObject+testBridge.m */; };
+		80002CB020BF240400A1AD0C /* ProcessData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9720BF240400A1AD0C /* ProcessData.mm */; };
+		80002CB120BF240400A1AD0C /* Recorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9920BF240400A1AD0C /* Recorder.m */; };
+		80002CB220BF240400A1AD0C /* SharedInstance.m in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9C20BF240400A1AD0C /* SharedInstance.m */; };
+		80002CB320BF240400A1AD0C /* FileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002CA120BF240400A1AD0C /* FileInfo.swift */; };
+		80002CB620BF240400A1AD0C /* AudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB520BF240400A1AD0C /* AudioKit.framework */; };
+		80002CB820BF240400A1AD0C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB720BF240400A1AD0C /* AudioToolbox.framework */; };
+		80002CBA20BF240400A1AD0C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB920BF240400A1AD0C /* AVFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		80002C6920BF240300A1AD0C /* SoundEngine UROK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SoundEngine UROK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		80002C6C20BF240300A1AD0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		80002C7020BF240400A1AD0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		80002C7320BF240400A1AD0C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		80002C7520BF240400A1AD0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		80002C7620BF240400A1AD0C /* SoundEngine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SoundEngine.entitlements; sourceTree = "<group>"; };
+		80002C7D20BF240400A1AD0C /* AlgorithmCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlgorithmCell.swift; sourceTree = "<group>"; };
+		80002C7E20BF240400A1AD0C /* Graph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
+		80002C7F20BF240400A1AD0C /* MainCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainCell.swift; sourceTree = "<group>"; };
+		80002C8020BF240400A1AD0C /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		80002C8420BF240400A1AD0C /* bridgeClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridgeClass.h; sourceTree = "<group>"; };
+		80002C8520BF240400A1AD0C /* bridgeClass.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = bridgeClass.mm; sourceTree = "<group>"; };
+		80002C8620BF240400A1AD0C /* DetectingData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectingData.h; sourceTree = "<group>"; };
+		80002C8720BF240400A1AD0C /* DetectingData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DetectingData.mm; sourceTree = "<group>"; };
+		80002C8820BF240400A1AD0C /* DetectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectMgr.h; sourceTree = "<group>"; };
+		80002C8920BF240400A1AD0C /* DetectMgr.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DetectMgr.mm; sourceTree = "<group>"; };
+		80002C8A20BF240400A1AD0C /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
+		80002C8B20BF240400A1AD0C /* Engine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Engine.mm; sourceTree = "<group>"; };
+		80002C8C20BF240400A1AD0C /* engineHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engineHeader.h; sourceTree = "<group>"; };
+		80002C8D20BF240400A1AD0C /* FFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFT.h; sourceTree = "<group>"; };
+		80002C8E20BF240400A1AD0C /* FFT.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFT.mm; sourceTree = "<group>"; };
+		80002C8F20BF240400A1AD0C /* FourierTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FourierTransform.h; sourceTree = "<group>"; };
+		80002C9020BF240400A1AD0C /* FourierTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FourierTransform.mm; sourceTree = "<group>"; };
+		80002C9120BF240400A1AD0C /* globals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = globals.cpp; sourceTree = "<group>"; };
+		80002C9220BF240400A1AD0C /* globals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = globals.h; sourceTree = "<group>"; };
+		80002C9320BF240400A1AD0C /* IAudioDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioDriver.h; sourceTree = "<group>"; };
+		80002C9420BF240400A1AD0C /* NSObject+testBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+testBridge.h"; sourceTree = "<group>"; };
+		80002C9520BF240400A1AD0C /* NSObject+testBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+testBridge.m"; sourceTree = "<group>"; };
+		80002C9620BF240400A1AD0C /* ProcessData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessData.h; sourceTree = "<group>"; };
+		80002C9720BF240400A1AD0C /* ProcessData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProcessData.mm; sourceTree = "<group>"; };
+		80002C9820BF240400A1AD0C /* Recorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Recorder.h; sourceTree = "<group>"; };
+		80002C9920BF240400A1AD0C /* Recorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Recorder.m; sourceTree = "<group>"; };
+		80002C9A20BF240400A1AD0C /* RWBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWBuffer.h; sourceTree = "<group>"; };
+		80002C9B20BF240400A1AD0C /* SharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedInstance.h; sourceTree = "<group>"; };
+		80002C9C20BF240400A1AD0C /* SharedInstance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedInstance.m; sourceTree = "<group>"; };
+		80002C9D20BF240400A1AD0C /* ulib_basedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ulib_basedef.h; sourceTree = "<group>"; };
+		80002C9E20BF240400A1AD0C /* ulib_criticalsection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ulib_criticalsection.h; sourceTree = "<group>"; };
+		80002C9F20BF240400A1AD0C /* ulib_isync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ulib_isync.h; sourceTree = "<group>"; };
+		80002CA120BF240400A1AD0C /* FileInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileInfo.swift; sourceTree = "<group>"; };
+		80002CA220BF240400A1AD0C /* bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridge.h; sourceTree = "<group>"; };
+		80002CB520BF240400A1AD0C /* AudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		80002CB720BF240400A1AD0C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		80002CB920BF240400A1AD0C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		80002C6620BF240300A1AD0C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80002CBA20BF240400A1AD0C /* AVFoundation.framework in Frameworks */,
+				80002CB820BF240400A1AD0C /* AudioToolbox.framework in Frameworks */,
+				80002CB620BF240400A1AD0C /* AudioKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		80002C6020BF240300A1AD0C = {
+			isa = PBXGroup;
+			children = (
+				80002C6B20BF240300A1AD0C /* SoundEngine */,
+				80002C6A20BF240300A1AD0C /* Products */,
+				80002CB420BF240400A1AD0C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		80002C6A20BF240300A1AD0C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				80002C6920BF240300A1AD0C /* SoundEngine UROK.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		80002C6B20BF240300A1AD0C /* SoundEngine */ = {
+			isa = PBXGroup;
+			children = (
+				80002CA220BF240400A1AD0C /* bridge.h */,
+				80002C8120BF240400A1AD0C /* engine */,
+				80002CA020BF240400A1AD0C /* model */,
+				80002C7C20BF240400A1AD0C /* vc */,
+				80002C6C20BF240300A1AD0C /* AppDelegate.swift */,
+				80002C7020BF240400A1AD0C /* Assets.xcassets */,
+				80002C7220BF240400A1AD0C /* Main.storyboard */,
+				80002C7520BF240400A1AD0C /* Info.plist */,
+				80002C7620BF240400A1AD0C /* SoundEngine.entitlements */,
+			);
+			path = SoundEngine;
+			sourceTree = "<group>";
+		};
+		80002C7C20BF240400A1AD0C /* vc */ = {
+			isa = PBXGroup;
+			children = (
+				80002C8020BF240400A1AD0C /* MainVC.swift */,
+				80002C7F20BF240400A1AD0C /* MainCell.swift */,
+				80002C7D20BF240400A1AD0C /* AlgorithmCell.swift */,
+				80002C7E20BF240400A1AD0C /* Graph.swift */,
+			);
+			path = vc;
+			sourceTree = "<group>";
+		};
+		80002C8120BF240400A1AD0C /* engine */ = {
+			isa = PBXGroup;
+			children = (
+				80002C8420BF240400A1AD0C /* bridgeClass.h */,
+				80002C8520BF240400A1AD0C /* bridgeClass.mm */,
+				80002C8620BF240400A1AD0C /* DetectingData.h */,
+				80002C8720BF240400A1AD0C /* DetectingData.mm */,
+				80002C8820BF240400A1AD0C /* DetectMgr.h */,
+				80002C8920BF240400A1AD0C /* DetectMgr.mm */,
+				80002C8A20BF240400A1AD0C /* Engine.h */,
+				80002C8B20BF240400A1AD0C /* Engine.mm */,
+				80002C8C20BF240400A1AD0C /* engineHeader.h */,
+				80002C8D20BF240400A1AD0C /* FFT.h */,
+				80002C8E20BF240400A1AD0C /* FFT.mm */,
+				80002C8F20BF240400A1AD0C /* FourierTransform.h */,
+				80002C9020BF240400A1AD0C /* FourierTransform.mm */,
+				80002C9120BF240400A1AD0C /* globals.cpp */,
+				80002C9220BF240400A1AD0C /* globals.h */,
+				80002C9320BF240400A1AD0C /* IAudioDriver.h */,
+				80002C9420BF240400A1AD0C /* NSObject+testBridge.h */,
+				80002C9520BF240400A1AD0C /* NSObject+testBridge.m */,
+				80002C9620BF240400A1AD0C /* ProcessData.h */,
+				80002C9720BF240400A1AD0C /* ProcessData.mm */,
+				80002C9820BF240400A1AD0C /* Recorder.h */,
+				80002C9920BF240400A1AD0C /* Recorder.m */,
+				80002C9A20BF240400A1AD0C /* RWBuffer.h */,
+				80002C9B20BF240400A1AD0C /* SharedInstance.h */,
+				80002C9C20BF240400A1AD0C /* SharedInstance.m */,
+				80002C9D20BF240400A1AD0C /* ulib_basedef.h */,
+				80002C9E20BF240400A1AD0C /* ulib_criticalsection.h */,
+				80002C9F20BF240400A1AD0C /* ulib_isync.h */,
+			);
+			path = engine;
+			sourceTree = "<group>";
+		};
+		80002CA020BF240400A1AD0C /* model */ = {
+			isa = PBXGroup;
+			children = (
+				80002CA120BF240400A1AD0C /* FileInfo.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		80002CB420BF240400A1AD0C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				80002CB920BF240400A1AD0C /* AVFoundation.framework */,
+				80002CB720BF240400A1AD0C /* AudioToolbox.framework */,
+				80002CB520BF240400A1AD0C /* AudioKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		80002C6820BF240300A1AD0C /* SoundEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 80002C7920BF240400A1AD0C /* Build configuration list for PBXNativeTarget "SoundEngine" */;
+			buildPhases = (
+				80002C6520BF240300A1AD0C /* Sources */,
+				80002C6620BF240300A1AD0C /* Frameworks */,
+				80002C6720BF240300A1AD0C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SoundEngine;
+			productName = SoundEngine;
+			productReference = 80002C6920BF240300A1AD0C /* SoundEngine UROK.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		80002C6120BF240300A1AD0C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = Snow;
+				TargetAttributes = {
+					80002C6820BF240300A1AD0C = {
+						CreatedOnToolsVersion = 9.3;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = 80002C6420BF240300A1AD0C /* Build configuration list for PBXProject "SoundEngine" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 80002C6020BF240300A1AD0C;
+			productRefGroup = 80002C6A20BF240300A1AD0C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				80002C6820BF240300A1AD0C /* SoundEngine */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		80002C6720BF240300A1AD0C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80002C7120BF240400A1AD0C /* Assets.xcassets in Resources */,
+				80002C7420BF240400A1AD0C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		80002C6520BF240300A1AD0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80002CA420BF240400A1AD0C /* Graph.swift in Sources */,
+				80002CB220BF240400A1AD0C /* SharedInstance.m in Sources */,
+				80002CAC20BF240400A1AD0C /* FFT.mm in Sources */,
+				80002CB020BF240400A1AD0C /* ProcessData.mm in Sources */,
+				80002CAB20BF240400A1AD0C /* Engine.mm in Sources */,
+				80002CAD20BF240400A1AD0C /* FourierTransform.mm in Sources */,
+				80002CAF20BF240400A1AD0C /* NSObject+testBridge.m in Sources */,
+				80002CA920BF240400A1AD0C /* DetectingData.mm in Sources */,
+				80002CAE20BF240400A1AD0C /* globals.cpp in Sources */,
+				80002CAA20BF240400A1AD0C /* DetectMgr.mm in Sources */,
+				80002CA620BF240400A1AD0C /* MainVC.swift in Sources */,
+				80002C6D20BF240300A1AD0C /* AppDelegate.swift in Sources */,
+				80002CB120BF240400A1AD0C /* Recorder.m in Sources */,
+				80002CA520BF240400A1AD0C /* MainCell.swift in Sources */,
+				80002CA320BF240400A1AD0C /* AlgorithmCell.swift in Sources */,
+				80002CB320BF240400A1AD0C /* FileInfo.swift in Sources */,
+				80002CA820BF240400A1AD0C /* bridgeClass.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		80002C7220BF240400A1AD0C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				80002C7320BF240400A1AD0C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		80002C7720BF240400A1AD0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		80002C7820BF240400A1AD0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		80002C7A20BF240400A1AD0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SoundAlert/framework",
+				);
+				INFOPLIST_FILE = SoundEngine/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.onp.SoundEngineUrok;
+				PRODUCT_NAME = "SoundEngine UROK";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(TARGET_NAME)/bridge.h";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		80002C7B20BF240400A1AD0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SoundAlert/framework",
+				);
+				INFOPLIST_FILE = SoundEngine/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.onp.SoundEngineUrok;
+				PRODUCT_NAME = "SoundEngine UROK";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(TARGET_NAME)/bridge.h";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		80002C6420BF240300A1AD0C /* Build configuration list for PBXProject "SoundEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				80002C7720BF240400A1AD0C /* Debug */,
+				80002C7820BF240400A1AD0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		80002C7920BF240400A1AD0C /* Build configuration list for PBXNativeTarget "SoundEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				80002C7A20BF240400A1AD0C /* Debug */,
+				80002C7B20BF240400A1AD0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 80002C6120BF240300A1AD0C /* Project object */;
+}
