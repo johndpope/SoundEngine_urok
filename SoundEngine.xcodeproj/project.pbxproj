@@ -29,6 +29,7 @@
 		80002CB620BF240400A1AD0C /* AudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB520BF240400A1AD0C /* AudioKit.framework */; };
 		80002CB820BF240400A1AD0C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB720BF240400A1AD0C /* AudioToolbox.framework */; };
 		80002CBA20BF240400A1AD0C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB920BF240400A1AD0C /* AVFoundation.framework */; };
+		B83A34C220E36BF100653D84 /* FreqOrderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83A34C120E36BF100653D84 /* FreqOrderCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		80002CB520BF240400A1AD0C /* AudioKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AudioKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		80002CB720BF240400A1AD0C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		80002CB920BF240400A1AD0C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B83A34C120E36BF100653D84 /* FreqOrderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FreqOrderCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 		80002C7C20BF240400A1AD0C /* vc */ = {
 			isa = PBXGroup;
 			children = (
+				B83A34C120E36BF100653D84 /* FreqOrderCell.swift */,
 				80002C8020BF240400A1AD0C /* MainVC.swift */,
 				80002C7F20BF240400A1AD0C /* MainCell.swift */,
 				80002C7D20BF240400A1AD0C /* AlgorithmCell.swift */,
@@ -275,6 +278,7 @@
 				80002CAA20BF240400A1AD0C /* DetectMgr.mm in Sources */,
 				80002CA620BF240400A1AD0C /* MainVC.swift in Sources */,
 				80002C6D20BF240300A1AD0C /* AppDelegate.swift in Sources */,
+				B83A34C220E36BF100653D84 /* FreqOrderCell.swift in Sources */,
 				80002CB120BF240400A1AD0C /* Recorder.m in Sources */,
 				80002CA520BF240400A1AD0C /* MainCell.swift in Sources */,
 				80002CA320BF240400A1AD0C /* AlgorithmCell.swift in Sources */,

@@ -17,8 +17,11 @@ class FileInfo: NSObject {
     var strong_freq = 0
     var long_freq = 0
     var max_amplitude = 0
-    var max_freq_val_data = [[Int]]() // freq graph
+    var max_freq_val_data = [[[Int]]]() // freq graph
     var freq_data = [[Int]]()
+    
+    var freq_order_visible = [Bool]()
+    
     
     var ding_freq = 0, ding_frames = 0, ding_dec = false // false: nono/inc - No, true: dec - Yes
     var dong_freq = 0, dong_frames = 0, dong_dec = false // false: inc - No, true: dec - Yes

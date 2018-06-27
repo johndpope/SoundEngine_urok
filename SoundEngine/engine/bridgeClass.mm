@@ -221,7 +221,7 @@ int recRepeatCnt = 0;
         //NSLog(@"Frame Number %d total = %d", i, nFrameCnt);
         g_pDetectMgr->Process(&buffData[i * frameLen], frameLen, freqFrame, threshold, fMaxFreqs, fMaxVals);
         
-        for (int j = 0; j < freqFrame; j++) {
+        for (int j = 0; j < MAX_FREQ_CNT; j++) {
             g_pDetectMgr->m_fMaxFreqs[j][i] = fMaxFreqs[j];
             g_pDetectMgr->m_fMaxVals[j][i] = fMaxVals[j];
         }
@@ -239,7 +239,7 @@ int recRepeatCnt = 0;
             }
         }
         
-        for (int j = 0; j < MAX_FREQ_CNT; j++) {
+        for (int j = 0; j < freqFrame; j++) {
             float freq = fMaxFreqs[j];
             if (freq == 0) continue;
             

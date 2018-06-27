@@ -17,7 +17,7 @@ class Graph: NSView {
     var mImpluse = [Int]()
     
     //. frequency graph
-    var mFreq = [[Int]]()
+    var mFreqs = [[[Int]]]()
     
     //. histogram graph
     var mHistogram = [Float]()
@@ -27,7 +27,10 @@ class Graph: NSView {
     
     var freq_data_to_show : [[Int]]?
     
+    var checkedList : [Bool]?
+    
     override func draw(_ rect: NSRect) {
+        
         switch mType {
         case .impulse:
             drawImpulse(rect)
@@ -105,7 +108,7 @@ class Graph: NSView {
         path.line(to: CGPoint(x: 0, y: height))
         path.stroke()
         
-        let max_item = mFreq.max(by: { (a, b) -> Bool in
+        let max_item = mFreqs[0].max(by: { (a, b) -> Bool in
             return a[1] < b[1]
         })
         let fMaxVal = max_item?[1] ?? 0
@@ -122,71 +125,87 @@ class Graph: NSView {
             str.draw(at: NSMakePoint(-5 - 5 * CGFloat(str.count), (height - max_top) * CGFloat(i) / CGFloat(scaleY) - 5), withAttributes: atts)
         }
         
-        //. graph & text
-        let cnt = mFreq.count
-        let lineWidth = (width - right) / CGFloat(cnt)
-        var clr = randomColor(alpha: 1)
-        var prev_freq = 0
-        var j = CGFloat(0)
         var freq_list = [Int]()
+        var j = CGFloat(0)
         
-        for i in 0..<cnt {
-            var freq = mFreq[i][0]
-            var amp = mFreq[i][1]
+        if checkedList == nil {
+            return
+        }
+        
+        for idx in 0..<checkedList!.count {
             
-            if (freq_data_to_show != nil && freq > 0) {
-                var bFound = false
-                for j in 0..<freq_data_to_show!.count {
-                    if abs(freq - freq_data_to_show![j][0]) < band_width {
-                        bFound = true
-                        break
+            if !checkedList![idx] {
+                continue;
+            }
+            
+            let mFreq = mFreqs[idx]
+            
+            //. graph & text
+            let cnt = mFreq.count
+            let lineWidth = (width - right) / CGFloat(cnt)
+            var clr = randomColor(alpha: 1)
+            var prev_freq = 0
+            
+            for i in 0..<cnt {
+                var freq = mFreq[i][0]
+                var amp = mFreq[i][1]
+                
+                if (freq_data_to_show != nil && freq > 0) {
+                    var bFound = false
+                    for j in 0..<freq_data_to_show!.count {
+                        if abs(freq - freq_data_to_show![j][0]) < band_width {
+                            bFound = true
+                            break
+                        }
+                    }
+                    
+                    if (!bFound) {
+                        continue
                     }
                 }
                 
-                if (!bFound) {
-                    continue
-                }
-            }
-            
-            if freq > 0 && prev_freq != freq {
-                //print(String(format: "--- prev: %d,   freq: %d", prev_freq, freq))
-                prev_freq = freq
-                clr = randomColor(alpha: 1, val: freq)
-                
-                let xform1 = NSAffineTransform()
-                xform1.rotate(byDegrees: 90)
-                xform1.concat()
-                
-                let str = String(format: "%dHz", mFreq[i][0])
-                str.draw(at: NSMakePoint(-7 - 5 * CGFloat(str.count), -CGFloat(i) * lineWidth - 7), withAttributes: atts)
-                
-                xform1.invert()
-                xform1.concat()
-                
-                if freq_list.index(of: freq) == nil {
-                    freq_list.append(freq)
-                    let atts1: [NSAttributedStringKey: Any] = [
-                        .font: NSFont.systemFont(ofSize: 11),
-                        .foregroundColor: NSColor.blue,
-                        //.underlineStyle: NSUnderlineStyle.styleSingle.rawValue,
-                        //.backgroundColor: NSColor.green,
-                    ]
-                    str.draw(at: NSMakePoint(width - right + 10, height - j * 15 - 12), withAttributes: atts1)
+                if freq > 0 && prev_freq != freq {
+                    //print(String(format: "--- prev: %d,   freq: %d", prev_freq, freq))
+                    prev_freq = freq
+                    clr = randomColor(alpha: 1, val: freq)
                     
-                    clr.set()
-                    NSBezierPath.fill(NSRect(x: width - 25, y: height - j * 15 - 11, width: 25, height: 12))
-                    j += 1
+                    let xform1 = NSAffineTransform()
+                    xform1.rotate(byDegrees: 90)
+                    xform1.concat()
+                    
+                    let str = String(format: "%dHz", mFreq[i][0])
+                    if (mFreq == mFreqs[0]) {
+                        str.draw(at: NSMakePoint(-7 - 5 * CGFloat(str.count), -CGFloat(i) * lineWidth - 7), withAttributes: atts)
+                    }
+                    
+                    xform1.invert()
+                    xform1.concat()
+                    
+                    if freq_list.index(of: freq) == nil {
+                        freq_list.append(freq)
+                        let atts1: [NSAttributedStringKey: Any] = [
+                            .font: NSFont.systemFont(ofSize: 11),
+                            .foregroundColor: NSColor.blue,
+                            //.underlineStyle: NSUnderlineStyle.styleSingle.rawValue,
+                            //.backgroundColor: NSColor.green,
+                        ]
+                        str.draw(at: NSMakePoint(width - right + 10, height - j * 15 - 12), withAttributes: atts1)
+                        
+                        clr.set()
+                        NSBezierPath.fill(NSRect(x: width - 25, y: height - j * 15 - 11, width: 25, height: 12))
+                        j += 1
+                    }
                 }
+                
+                clr.set()
+                let x = CGFloat(1 + i * 2) * lineWidth / 2
+                let y = fMaxVal != 0 ? CGFloat(amp) / CGFloat(fMaxVal) * (height - max_top) : 0
+                let path1 = NSBezierPath()
+                path1.lineWidth = ceil(lineWidth)
+                path1.move(to: CGPoint(x: x, y: 0))
+                path1.line(to: CGPoint(x: x, y: y))
+                path1.stroke()
             }
-            
-            clr.set()
-            let x = CGFloat(1 + i * 2) * lineWidth / 2
-            let y = fMaxVal != 0 ? CGFloat(amp) / CGFloat(fMaxVal) * (height - max_top) : 0
-            let path1 = NSBezierPath()
-            path1.lineWidth = ceil(lineWidth)
-            path1.move(to: CGPoint(x: x, y: 0))
-            path1.line(to: CGPoint(x: x, y: y))
-            path1.stroke()
         }
         
         xform.invert()

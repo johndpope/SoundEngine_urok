@@ -401,7 +401,7 @@ bool CDetectMgr::Process(float* p_fData, int p_nFrameLen, int p_nFreqFrame, int 
     
     for (int i = 0; i < MAX_FREQ_CNT; i++)
     {
-        if (i < p_nFreqFrame && fMaxVals[i] >= p_nThreshold) {
+        if (fMaxVals[i] >= p_nThreshold) {
             p_fFreqs[i] = fMaxFreqs[i];
             p_fVals[i] = fMaxVals[i];
         } else {

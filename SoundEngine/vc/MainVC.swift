@@ -13,8 +13,11 @@ enum EGraphType {
     case impulse, frequency, histogram
 }
 
+let IS_UROK_APP = true
+
 class MainVC: NSViewController, AVAudioPlayerDelegate {
     
+    let MAX_FREQ_ORDER = 10
     
     @IBOutlet weak var vwBlock1: NSView!
     @IBOutlet weak var vwBlock2: NSView!
@@ -25,6 +28,7 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     
     @IBOutlet var tfMicTime: NSTextField!
     @IBOutlet var tfMicThreshold: NSTextField!
+    @IBOutlet var cbSoundType: NSComboBox!
     
     @IBOutlet var tfAnalysisSecs: NSTextField!
     
@@ -43,6 +47,15 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var chkFrequency: NSButton!
     @IBOutlet weak var chkAmplitude: NSButton!
     @IBOutlet weak var tfFrequencyOrder: NSTextField!
+    
+    // Download Graphs as PNG format
+    @IBOutlet weak var chkFFTGraph: NSButton!
+    @IBOutlet weak var chkAnalogGraph: NSButton!
+    @IBOutlet weak var chkIndividualGraphs: NSButton!
+    @IBOutlet weak var chkAllGraphs: NSButton!
+    
+    // For SoundEngine UROK
+    @IBOutlet weak var vwSoundType: NSStackView!
     
     
     var mMicTime = 0
@@ -83,6 +96,10 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
 
         // Do any additional setup after loading the view.
         initVC()
+        
+        if (IS_UROK_APP) {
+            vwSoundType.isHidden = true
+        }
 
         Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(updateHeaderUI), userInfo: nil, repeats: false)
     }
@@ -103,7 +120,12 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     //////////////////////////////////////////////////////////////////////
     
     func initVC() {
-        mSoundType = .telephone_ringing
+        if (IS_UROK_APP) {
+            mSoundType = .telephone_ringing
+        } else {
+            mSoundType = .doorbell
+        }
+        cbSoundType.selectItem(at: mSoundType.rawValue)
         
         tvList.delegate = self
         tvList.dataSource = self
@@ -111,6 +133,10 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     }
     
     @objc func updateHeaderUI() {
+        if (IS_UROK_APP) {
+            self.view.window!.title = "Sound Engine UROK"
+        }
+
         vwBlock1.layer?.borderColor = CGColor.black
         vwBlock1.layer?.borderWidth = 1
         vwBlock2.layer?.borderColor = CGColor.black
@@ -125,12 +151,25 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         mMicTime = Int(tfMicTime.intValue)
         mMicThreshold = Int(tfMicThreshold.intValue)
         
-        mSoundType = .telephone_ringing
+        if (!IS_UROK_APP) {
+            mSoundType = ESoundType(rawValue: cbSoundType.indexOfSelectedItem)!
+        }
         mBuffer = Int(tfBuffer.intValue)
         mFreqFrame = Int(tfFreqFrame.intValue)
+        if (mFreqFrame > MAX_FREQ_ORDER) {
+            mFreqFrame = MAX_FREQ_ORDER
+            tfFreqFrame.intValue = Int32(mFreqFrame)
+        }
         mThreshold = Int(tfThreshold.intValue)
         mBandWidth = Int(tfBand.intValue)
         mRepeatCnt = Int(tfRepeat.intValue)
+        
+        mFrequencyOrder = Int(tfFrequencyOrder.intValue)
+        if mFrequencyOrder <= 0 {
+            mFrequencyOrder = 1
+        } else if mFrequencyOrder > MAX_FREQ_ORDER {
+            mFrequencyOrder = MAX_FREQ_ORDER
+        }
     }
     
     func processAudio(_ dic : [[Int]], info: FileInfo, max_len : Int) {
@@ -161,8 +200,20 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         info.strong_freq = strong_freq
         info.long_freq = long_freq
         info.max_amplitude = max_amplitude
-        info.max_freq_val_data = dic_max
+        
+        info.max_freq_val_data.removeAll()
+        info.max_freq_val_data.append(dic_max)
+        for idx in 1..<MAX_FREQ_ORDER {
+            let dic_max1 = bridgeClass.get_max_freqs_vals(Int32(idx), Int32(max_len / self.mBuffer)) as! [[Int]]
+            info.max_freq_val_data.append(dic_max1)
+        }
+        
         info.freq_data = dic
+        
+        info.freq_order_visible.removeAll()
+        for i in 0..<mFreqFrame {
+            info.freq_order_visible.append(true)
+        }
         
         if mSoundType == .doorbell { //. ding & dong
             var ding_freq = 0, ding_start = 0, ding_end = 0, ding_frames = 0, ding_prev_amp = 0, ding_dec = 0 // false: nono/inc - No, true: dec - Yes
@@ -328,45 +379,41 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     }
     
     func analyseAudio(_ info: FileInfo, new: Bool = false) {
-        do {
-            guard !info.recorded else { return }
-            
-//            let file1 = EZAudioFile(url: info.file_url)
-            let file = try? AKAudioFile(forReading: info.file_url)
-            let data = file!.pcmBuffer.floatChannelData!
-            
-            var max_len = Int(file!.pcmBuffer.frameLength)
-            if (mAnalysisPeriod > 0) {
-                let analysisLen = Int(mAnalysisPeriod * file!.sampleRate)
-                if (analysisLen < max_len) {
-                    max_len = analysisLen;
-                }
-            }
-            
-            bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(file!.sampleRate), Int32(self.mBuffer))
-            
-            let dic = bridgeClass.get_g_pDetectMgr_ProcessFile(
-                data[0], Int32(max_len), Int32(self.mBuffer), Int32(self.mFreqFrame),
-                Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))! as! [[Int]]
-            
-            processAudio(dic, info: info, max_len: max_len)
-            
-            //. histogram
-            var histogram_data = [Float](repeating: 0, count: max_len)
-            for i in 0..<max_len {
-                histogram_data[i] = data[0][i]
-            }
-            
-            info.histogram = histogram_data
-            if new {
-                self.mList.append(info)
-            }
-            self.tvList.reloadData()
+        guard !info.recorded else { return }
         
-            bridgeClass.terminateEngine();
-        } catch {
-            
+//            let file1 = EZAudioFile(url: info.file_url)
+        let file = try? AKAudioFile(forReading: info.file_url)
+        let data = file!.pcmBuffer.floatChannelData!
+        
+        var max_len = Int(file!.pcmBuffer.frameLength)
+        if (mAnalysisPeriod > 0) {
+            let analysisLen = Int(mAnalysisPeriod * file!.sampleRate)
+            if (analysisLen < max_len) {
+                max_len = analysisLen;
+            }
         }
+        
+        bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(file!.sampleRate), Int32(self.mBuffer))
+        
+        let dic = bridgeClass.get_g_pDetectMgr_ProcessFile(
+            data[0], Int32(max_len), Int32(self.mBuffer), Int32(mFreqFrame),
+            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))! as! [[Int]]
+        
+        processAudio(dic, info: info, max_len: max_len)
+        
+        //. histogram
+        var histogram_data = [Float](repeating: 0, count: max_len)
+        for i in 0..<max_len {
+            histogram_data[i] = data[0][i]
+        }
+        
+        info.histogram = histogram_data
+        if new {
+            self.mList.append(info)
+        }
+        self.tvList.reloadData()
+    
+        bridgeClass.terminateEngine();
     }
     
     
@@ -432,19 +479,29 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
 
         var frameCnt = max_len / self.mBuffer
         
-//        if (mAnalysisPeriod > 0) {
-//            let analysisLen = Int(mAnalysisPeriod * file!.sampleRate)
-//            if (analysisLen < frameCnt) {
-//                frameCnt = analysisLen;
-//            }
-//        }
-        
         var dic_maxs : [[[Int]]] = []
         var startIdx = frameCnt - 1
         var endIdx = 0
         
         for order in 0..<mFrequencyOrder {
-            let dic_max = bridgeClass.get_max_freqs_vals(Int32(order), Int32(frameCnt)) as! [[Int]]
+            var dic_max = bridgeClass.get_max_freqs_vals(Int32(order), Int32(frameCnt)) as! [[Int]]
+
+            // Remove unnecessary frequencies
+            for i in 0..<frameCnt {
+                var bFound = false
+                let freq = dic_max[i][0]
+                for j in 0..<dic.count {
+                    if abs(freq - dic[j][0]) < mBandWidth {
+                        bFound = true
+                        break
+                    }
+                }
+                if (!bFound) {
+                    dic_max[i][0] = 0
+                    dic_max[i][1] = 0
+                }
+            }
+            
             dic_maxs.append(dic_max)
             
             // get start index
@@ -474,6 +531,14 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         }
         
         frameCnt = endIdx-startIdx+1
+        
+        if (mAnalysisPeriod > 0) {
+            let analysisLen = Int(mAnalysisPeriod * file!.sampleRate)
+            if (analysisLen < frameCnt) {
+                frameCnt = analysisLen;
+            }
+        }
+        
         if frameCnt > mMaxFrameCnt {
             mMaxFrameCnt = frameCnt
         }
@@ -513,45 +578,116 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         return strResult
     }
     
-    func exportGraphToPng(data : FileInfo, dirUrl : URL) {
-        let rc = NSRect(x: 0, y: 0, width: 1000, height: 180)
-        let graph = Graph(frame: rc)
+    func exportGraphToPng(info : FileInfo, dirUrl : URL) {
         
-        graph.band_width = mBandWidth
-        graph.mType = .frequency
-        graph.mFreq = data.max_freq_val_data
-        graph.freq_data_to_show = data.freq_data
+        let data = FileInfo()
+        data.file_url = info.file_url
+        data.file_name = info.file_name
         
-        let grass = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(rc.width), pixelsHigh: Int(rc.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
-        var ctx = NSGraphicsContext(bitmapImageRep: grass!)
-        NSGraphicsContext.current = ctx
-        graph.draw(rc)
-        let imgData = graph.imgData()
-        let url = dirUrl.appendingPathComponent(data.file_name + "_1.png")
-        do {
-            try imgData.write(to: url)
-        } catch let error {
-            NSLog(error.localizedDescription)
+        let file = try? AKAudioFile(forReading: data.file_url)
+        let soundData = file!.pcmBuffer.floatChannelData!
+        
+        var max_len = Int(file!.pcmBuffer.frameLength)
+        if (mAnalysisPeriod > 0) {
+            let analysisLen = Int(mAnalysisPeriod * file!.sampleRate)
+            if (analysisLen < max_len) {
+                max_len = analysisLen;
+            }
         }
         
-        let rc2 = NSRect(x: 0, y: 0, width: 678, height: 225)
-        let graph2 = Graph(frame:rc2)
-        graph2.mType = .histogram
-        graph2.mHistogram = data.histogram
+        bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(file!.sampleRate), Int32(self.mBuffer))
         
-        let grass2 = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(rc2.width), pixelsHigh: Int(rc2.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
-        var ctx2 = NSGraphicsContext(bitmapImageRep: grass2!)
-        NSGraphicsContext.current = ctx2
+        let dic = bridgeClass.get_g_pDetectMgr_ProcessFile(
+            soundData[0], Int32(max_len), Int32(self.mBuffer), Int32(mFrequencyOrder),
+            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))! as! [[Int]]
         
-        graph2.draw(rc2)
-        let imgData2 = graph2.imgData()
-        let url2 = dirUrl.appendingPathComponent(data.file_name + "_2.png")
-        do {
-            try imgData2.write(to: url2)
-        } catch let error {
-            NSLog(error.localizedDescription)
+        processAudio(dic, info: data, max_len: max_len)
+        
+        bridgeClass.terminateEngine();
+
+        
+        if self.chkFFTGraph.state == .on {
+            
+            let rc = NSRect(x: 0, y: 0, width: 1000, height: 210)
+            let graph = Graph(frame: rc)
+            
+            graph.band_width = mBandWidth
+            graph.mType = .frequency
+            graph.mFreqs = data.max_freq_val_data
+            graph.freq_data_to_show = data.freq_data
+            
+            var checked_list : [Bool] = []
+            for i in 0..<mFrequencyOrder {
+                checked_list.append(false)
+            }
+            
+            if chkIndividualGraphs.state == .on {
+                // Export individual graph for each frequency order
+                for i in 0..<mFrequencyOrder {
+                    
+                    for j in 0..<mFrequencyOrder {
+                        checked_list[j] = false
+                    }
+                    checked_list[i] = true
+                    
+                    graph.checkedList = checked_list
+                    
+                    let grass = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(rc.width), pixelsHigh: Int(rc.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
+                    var ctx = NSGraphicsContext(bitmapImageRep: grass!)
+                    NSGraphicsContext.current = ctx
+                    graph.draw(rc)
+                    let imgData = graph.imgData()
+                    let url = dirUrl.appendingPathComponent(data.file_name + "_fft_" + String(i+1) + ".png")
+                    do {
+                        try imgData.write(to: url)
+                    } catch let error {
+                        NSLog(error.localizedDescription)
+                    }
+                }
+            }
+            
+            if chkAllGraphs.state == .on {
+                
+                for j in 0..<mFrequencyOrder {
+                    checked_list[j] = true
+                }
+                
+                graph.checkedList = checked_list
+                
+                let grass = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(rc.width), pixelsHigh: Int(rc.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
+                var ctx = NSGraphicsContext(bitmapImageRep: grass!)
+                NSGraphicsContext.current = ctx
+                graph.draw(rc)
+                let imgData = graph.imgData()
+                let url = dirUrl.appendingPathComponent(data.file_name + "_fft_all.png")
+                do {
+                    try imgData.write(to: url)
+                } catch let error {
+                    NSLog(error.localizedDescription)
+                }
+            }
         }
         
+        if self.chkAnalogGraph.state == .on {
+        
+            let rc2 = NSRect(x: 0, y: 0, width: 678, height: 225)
+            let graph2 = Graph(frame:rc2)
+            graph2.mType = .histogram
+            graph2.mHistogram = data.histogram
+            
+            let grass2 = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(rc2.width), pixelsHigh: Int(rc2.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
+            var ctx2 = NSGraphicsContext(bitmapImageRep: grass2!)
+            NSGraphicsContext.current = ctx2
+            
+            graph2.draw(rc2)
+            let imgData2 = graph2.imgData()
+            let url2 = dirUrl.appendingPathComponent(data.file_name + "_analog.png")
+            do {
+                try imgData2.write(to: url2)
+            } catch let error {
+                NSLog(error.localizedDescription)
+            }
+        }
     }
     
     //////////////////////////////////////////////////////////////////////
@@ -602,7 +738,8 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             btnMic.title = "Stop"
             
             bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(mRate), Int32(mBuffer))
-            bridgeClass.recStart(Int32(mMicTime), Int32(mMicThreshold), 0, Int32(mFreqFrame), Int32(mThreshold), Int32(mBandWidth), Int32(mRepeatCnt))
+            // bridgeClass.recStart(Int32(mMicTime), Int32(mMicThreshold), 0, Int32(mFreqFrame), Int32(mThreshold), Int32(mBandWidth), Int32(mRepeatCnt))
+            bridgeClass.recStart(Int32(mMicTime), Int32(mMicThreshold), 0, Int32(mFreqFrame), Int32(mMicThreshold), Int32(mBandWidth), Int32(mRepeatCnt))
             
             mTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateRecInfo), userInfo: nil, repeats: true)
         } else {
@@ -631,6 +768,9 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     }
     
     @IBAction func onExportCSV(_ sender: Any) {
+        
+        setStatus()
+        
         if mList.count == 0 {
             showAlert(message: "There is no data to export.")
             return;
@@ -640,12 +780,6 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         mCsvFrame = chkFrame.state == .on
         mCsvFrquency = chkFrequency.state == .on
         mCsvAmplitude = chkAmplitude.state == .on
-        mFrequencyOrder = Int(tfFrequencyOrder.intValue)
-        if mFrequencyOrder <= 0 {
-            mFrequencyOrder = 1
-        } else if mFrequencyOrder > 10 {
-            mFrequencyOrder = 10
-        }
         
         let panel = NSSavePanel()
         panel.message = "Export CSV Format file"
@@ -686,6 +820,8 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     }
     
     @IBAction func onDownloadGraphsPNG(_ sender: Any) {
+        setStatus()
+        
         let window = NSApplication.shared.windows[0]
         //let type = NSImage.imageTypes
         
@@ -698,7 +834,7 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             if res == NSApplication.ModalResponse.OK {
                 let url = panel.directoryURL
                 for item in self.mList {
-                    self.exportGraphToPng(data: item, dirUrl: url!)
+                    self.exportGraphToPng(info: item, dirUrl: url!)
                 }
                 
                 self.showAlert(message: "Images has been saved in\n" + (url?.absoluteString)!)
@@ -780,6 +916,7 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
     
     func cellForMain(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "MainCell"), owner: self) as! MainCell
+        
         let data = mList[row]
         
         var freq = ""
@@ -800,6 +937,8 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         }
         freq = String(freq.dropLast())
         repeatation = String(repeatation.dropLast())
+        
+        cell.data = data
         
         cell.lbFile.stringValue = data.file_name
         cell.lbFreq.stringValue = freq
@@ -829,11 +968,14 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         for item in cell.vwGraph1.subviews {
             item.removeFromSuperview()
         }
+        
         let graph = Graph(frame: cell.vwGraph1.bounds)
         graph.band_width = mBandWidth
         graph.mType = .frequency
-        graph.mFreq = data.max_freq_val_data
+        graph.mFreqs = data.max_freq_val_data
         graph.freq_data_to_show = data.freq_data
+        graph.checkedList = data.freq_order_visible
+        cell.graph1 = graph
         cell.vwGraph1.addSubview(graph)
         
         for item in cell.vwGraph2.subviews {
@@ -856,6 +998,8 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         } else {
             cell.btnPlay.title = "Play"
         }
+
+        cell.refresh()
         
         return cell
     }
