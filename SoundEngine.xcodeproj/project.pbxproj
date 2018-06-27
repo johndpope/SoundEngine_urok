@@ -129,10 +129,10 @@
 		80002C7C20BF240400A1AD0C /* vc */ = {
 			isa = PBXGroup;
 			children = (
-				B83A34C120E36BF100653D84 /* FreqOrderCell.swift */,
 				80002C8020BF240400A1AD0C /* MainVC.swift */,
 				80002C7F20BF240400A1AD0C /* MainCell.swift */,
 				80002C7D20BF240400A1AD0C /* AlgorithmCell.swift */,
+				B83A34C120E36BF100653D84 /* FreqOrderCell.swift */,
 				80002C7E20BF240400A1AD0C /* Graph.swift */,
 			);
 			path = vc;
@@ -420,6 +420,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 428L9X45XN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/SoundAlert/framework",
@@ -442,6 +443,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 428L9X45XN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/SoundAlert/framework",
