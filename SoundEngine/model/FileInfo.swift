@@ -16,9 +16,12 @@ class FileInfo: NSObject {
     var histogram = [Float]() // histogram
     var strong_freq = 0
     var long_freq = 0
-    var max_amplitude = 0
+    var max_amp_of_freq = 0
     var max_freq_val_data = [[[Int]]]() // freq graph
+    
+    // Frequency Values & Repeatitions
     var freq_data = [[Int]]()
+    var total_frames = 0 // sum of repeatitions of each frequency
     
     var freq_order_visible = [Bool]()
     

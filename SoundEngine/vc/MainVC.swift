@@ -189,17 +189,17 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         
         let dic_max = bridgeClass.get_max_freqs_vals(0, Int32(max_len / self.mBuffer)) as! [[Int]]
         
-        var strong_freq = 0, max_amplitude = 0
+        var strong_freq = 0, max_amp_of_freq = 0
         for item in dic_max {
-            if max_amplitude < item[1] {
+            if max_amp_of_freq < item[1] {
                 strong_freq = item[0]
-                max_amplitude = item[1]
+                max_amp_of_freq = item[1]
             }
         }
         
         info.strong_freq = strong_freq
         info.long_freq = long_freq
-        info.max_amplitude = max_amplitude
+        info.max_amp_of_freq = max_amp_of_freq
         
         info.max_freq_val_data.removeAll()
         info.max_freq_val_data.append(dic_max)
@@ -209,6 +209,13 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         }
         
         info.freq_data = dic
+        
+        info.total_frames = 0
+        
+        for i in 0..<info.freq_data.count {
+            let repeat_val = info.freq_data[i][1]
+            info.total_frames += repeat_val
+        }
         
         info.freq_order_visible.removeAll()
         for i in 0..<mFreqFrame {
@@ -673,7 +680,7 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             let rc2 = NSRect(x: 0, y: 0, width: 678, height: 225)
             let graph2 = Graph(frame:rc2)
             graph2.mType = .histogram
-            graph2.mHistogram = data.histogram
+            graph2.mHistogram = info.histogram
             
             let grass2 = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(rc2.width), pixelsHigh: Int(rc2.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
             var ctx2 = NSGraphicsContext(bitmapImageRep: grass2!)
@@ -681,7 +688,7 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             
             graph2.draw(rc2)
             let imgData2 = graph2.imgData()
-            let url2 = dirUrl.appendingPathComponent(data.file_name + "_analog.png")
+            let url2 = dirUrl.appendingPathComponent(info.file_name + "_analog.png")
             do {
                 try imgData2.write(to: url2)
             } catch let error {
@@ -702,8 +709,8 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = true
-        panel.message = "Import one or more wav files"
-        panel.allowedFileTypes = ["wav"]
+        panel.message = "Import one or more wav & mp3 files"
+        panel.allowedFileTypes = ["wav", "mp3"]
         panel.beginSheetModal(for: window) { (res) in
             if res == NSApplication.ModalResponse.OK {
                 for url in panel.urls {
@@ -851,6 +858,7 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     var player: AVAudioPlayer!
     var file_url : String?
     var playing_idx : Int = -1
+    
     @IBAction func playAction(_ sender: NSButton) {
         let data = mList[sender.tag]
         playing_idx = sender.tag
@@ -923,13 +931,11 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         var repeatation = ""
         var freq_list = [Int]()
         var repeat_list = [Int]()
-        var total_frames = 0
         
         for i in 0..<data.freq_data.count {
             let freq_val = data.freq_data[i][0]
             let repeat_val = data.freq_data[i][1]
             
-            total_frames += repeat_val
             freq_list.append(freq_val)
             repeat_list.append(repeat_val)
             freq += String(format: "Frequency (%d) = %d Hz\n", i + 1, freq_val)
@@ -943,10 +949,10 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         cell.lbFile.stringValue = data.file_name
         cell.lbFreq.stringValue = freq
         cell.lbRepeat.stringValue = repeatation
-        cell.lbTotal.stringValue = String(format: "%d Frames", total_frames)
+        cell.lbTotal.stringValue = String(format: "%d Frames", data.total_frames)
         cell.lbStrong.stringValue = String(format: "%d Hz", data.strong_freq)
         cell.lbLong.stringValue = String(format: "%d Hz", data.long_freq)
-        cell.lbMaxAmp.stringValue = data.max_amplitude > 0 ? String(format: "%.1f, %d dB", data.max_value, Int(getDB(amp: data.max_value))) : ""
+        cell.lbMaxAmp.stringValue = data.max_amp_of_freq > 0 ? String(format: "%d, %d dB", data.max_amp_of_freq, Int(getDB(amp: data.max_value))) : ""
         
         var etc_info = ""
         if mSoundType == .doorbell {
@@ -1036,6 +1042,13 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         var min_amplitude_silent = Float(0)
         var max_amplitude_silent = Float(0)
         
+        var LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        var freq_str : String = ""
+        
+        let strLabels : [String] = [/*0th*/"th", /*1st*/"st", /*2nd*/"nd", /*3rd*/"rd", /*4th*/"th",
+                                           /*5th*/"th", /*6th*/"th", /*7th*/"th", /*8th*/"th", /*9th*/"th"]
+        
+        var idx = 0
         for item in mList {
             if mSoundType == .microwave_beeps || mSoundType == .oven_timer_beeps || mSoundType == .smoke_alarms {
                 min_freq = min_freq == 0 ? item.long_freq : min(min_freq, item.long_freq)
@@ -1045,7 +1058,7 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
                 max_freq = max_freq == 0 ? item.max_freq : max(max_freq, item.max_freq)
             }
             
-            total_amplitude_beeps += item.max_amplitude
+            total_amplitude_beeps += item.max_amp_of_freq
             if item.continue_ok {
                 total_continue_beep += item.continue_beep_times
                 total_continue_cnt += 1
@@ -1057,7 +1070,36 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
                 min_amplitude_silent = min_amplitude_silent == 0 ? item.min_amp_for_silent : min(min_amplitude_silent, item.min_amp_for_silent)
                 max_amplitude_silent = max(max_amplitude_silent, item.max_amp_for_silent)
             }
+            
+            freq_str = freq_str + LETTERS[idx % LETTERS.count] + ") "
+            
+            if (mSoundType == .telephone_ringing) {
+                var valid_freq_cnt = 0
+                let totalFrames = item.beep_frames
+                
+                for i in 0..<item.freq_data.count {
+                    let freq_val = item.freq_data[i][0]
+                    let repeat_val = item.freq_data[i][1]
+                    
+                    if (repeat_val >= item.total_frames * 2 / 10) {
+                        freq_str += "\n"
+                        freq_str += String(format: "%d%@ Frequency value = %d Hz\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], freq_val)
+                        freq_str += String(format: "Number of frames %d%@ Freq. = (%d-%d)=%d frames\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], repeat_val, repeat_val / 10, repeat_val - repeat_val / 10)
+                        freq_str += String(format: "Bandwidth %d%@ Frequency = %d Hz\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], mBandWidth)
+                        freq_str += "\n"
+                        valid_freq_cnt = valid_freq_cnt + 1
+                    }
+                }
+                
+            } else if (mSoundType == .microwave_beeps || mSoundType == .oven_timer_beeps || mSoundType == .smoke_alarms) {
+                
+                freq_str += String(format: "%d Hz\n", item.strong_freq)
+            }
+            
+            idx = idx + 1
         }
+        
+        
         let amplitude_beeps = Int(total_amplitude_beeps / mList.count / 2)
         let continue_beep = total_continue_cnt != 0 ? total_continue_beep / Float(total_continue_cnt) : 0
         
@@ -1078,13 +1120,12 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
             cell.lbInfo2.stringValue = ""
             
         case .microwave_beeps, .oven_timer_beeps, .smoke_alarms:
-            cell.lbInfo1.stringValue = String(format: "> Min Frequency = %d Hz\n" +
-                "> Max Frequency = %d Hz\n\n" +
+            cell.lbInfo1.stringValue = String(format: "%@\n" +
                 "> Amplitude for beeps = %d\n\n" +
                 "> Min beep frames = %d frames\n" +
                 "> Max beep frames = %d frames\n\n" +
                 "> Continues beep = %.1f sec",
-                                              min_freq, max_freq, amplitude_beeps, min_beeps_frame, max_beeps_frame, continue_beep
+                                              freq_str, amplitude_beeps, min_beeps_frame, max_beeps_frame, continue_beep
             )
             
             cell.lbInfo2.stringValue = String(format: "> Min silent frames (between beeps) = %d frames\n" +
@@ -1098,22 +1139,19 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
             )
             
         case .telephone_ringing:
-            cell.lbInfo1.stringValue = String(format: "> Min Frequency = %d Hz\n" +
-                "> Max Frequency = %d Hz\n\n" +
-                "> Min beep frames = %d frames\n" +
-                "> Max beep frames = %d frames\n\n" +
-                "> Continues beep = %.1f sec",
-                                              min_freq, max_freq, min_beeps_frame, max_beeps_frame, continue_beep
-            )
+            cell.lbInfo1.stringValue = String(format: "%@\n", freq_str)
             
-            cell.lbInfo2.stringValue = String(format: "> Min silent frames (between beeps) = %d frames\n" +
+            cell.lbInfo2.stringValue = String(format: "> Min beep frames = %d frames\n" +
+                "> Max beep frames = %d frames\n\n" +
+                "> Continues beep = %.1f sec" +
+                "> Min silent frames (between beeps) = %d frames\n" +
                 "> Max silent frames (between beeps) = %d frames\n\n" +
                 "> Min Amplitude for silent frame = %d\n" +
                 "> Max Amplitude for silent frame = %d\n\n" +
                 "> Repeat beeps = 3 times (by default)\n\n" +
                 "> Frequency Bandwidth = (+/-)100 Hz (by default value)\n" +
                 "> Frame Bandwidth = (+/-)4 frames (by default value)",
-                                              min_silent_frame, max_silent_frame, min_amplitude_silent, max_amplitude_silent
+                   min_beeps_frame, max_beeps_frame, continue_beep, min_silent_frame, max_silent_frame, min_amplitude_silent, max_amplitude_silent
             )
         }
         
