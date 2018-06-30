@@ -1042,7 +1042,6 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         var min_amplitude_silent = Float(0)
         var max_amplitude_silent = Float(0)
         
-        var LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
         var freq_str : String = ""
         
         let strLabels : [String] = [/*0th*/"th", /*1st*/"st", /*2nd*/"nd", /*3rd*/"rd", /*4th*/"th",
@@ -1071,7 +1070,7 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
                 max_amplitude_silent = max(max_amplitude_silent, item.max_amp_for_silent)
             }
             
-            freq_str = freq_str + LETTERS[idx % LETTERS.count] + ") "
+            freq_str = freq_str + item.file_name + "\n\n"
             
             if (mSoundType == .telephone_ringing) {
                 var valid_freq_cnt = 0
@@ -1082,18 +1081,22 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
                     let repeat_val = item.freq_data[i][1]
                     
                     if (repeat_val >= item.total_frames * 2 / 10) {
-                        freq_str += "\n"
-                        freq_str += String(format: "%d%@ Frequency value = %d Hz\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], freq_val)
-                        freq_str += String(format: "Number of frames %d%@ Freq. = (%d-%d)=%d frames\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], repeat_val, repeat_val / 10, repeat_val - repeat_val / 10)
-                        freq_str += String(format: "Bandwidth %d%@ Frequency = %d Hz\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], mBandWidth)
-                        freq_str += "\n"
+                        //freq_str += "\n"
+                        freq_str += String(format: "> %d%@ Frequency value = %d Hz\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], freq_val)
+                        freq_str += String(format: "> Number of frames %d%@ Freq. = (%d-%d)=%d frames\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], repeat_val, repeat_val / 10, repeat_val - repeat_val / 10)
+                        freq_str += String(format: "> Bandwidth %d%@ Frequency = %d Hz\n", valid_freq_cnt + 1, strLabels[(valid_freq_cnt+1)%10], mBandWidth)
                         valid_freq_cnt = valid_freq_cnt + 1
                     }
                 }
                 
+                freq_str += String(format: "> Silent frames between beeps = %d Frames\n\n", item.silent_frames)
+                
             } else if (mSoundType == .microwave_beeps || mSoundType == .oven_timer_beeps || mSoundType == .smoke_alarms) {
                 
-                freq_str += String(format: "%d Hz\n", item.strong_freq)
+                freq_str += String(format: ">Frequency value = %d Hz\n" +
+                    "> Bandwidth = %d Hz\n" +
+                    "> eep frame = %d Frames\n" +
+                    "> Silent frames = %d Frames\n\n", item.strong_freq, mBandWidth, item.beep_frames, item.silent_frames)
             }
             
             idx = idx + 1
@@ -1105,7 +1108,8 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         
         switch mSoundType {
         case .doorbell:
-            cell.lbInfo1.stringValue = String(format: "> Min Ding Frequency = %d Hz\n" +
+            cell.lbInfo1.stringValue = String(format:
+                "> Min Ding Frequency = %d Hz\n" +
                 "> Max Ding Frequency = %d Hz\n\n" +
                 "> Min Dong Frequency = %d Hz\n" +
                 "> Max Dong Frequency = %d Hz\n\n" +
@@ -1120,28 +1124,28 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
             cell.lbInfo2.stringValue = ""
             
         case .microwave_beeps, .oven_timer_beeps, .smoke_alarms:
-            cell.lbInfo1.stringValue = String(format: "%@\n" +
+            cell.lbInfo1.stringValue = String(format: "%@\n", freq_str)
+            
+            cell.lbInfo2.stringValue = String(format: "(Universal Algorithm) for all sounds\n\n" +
                 "> Amplitude for beeps = %d\n\n" +
                 "> Min beep frames = %d frames\n" +
                 "> Max beep frames = %d frames\n\n" +
-                "> Continues beep = %.1f sec",
-                                              freq_str, amplitude_beeps, min_beeps_frame, max_beeps_frame, continue_beep
-            )
-            
-            cell.lbInfo2.stringValue = String(format: "> Min silent frames (between beeps) = %d frames\n" +
+                "> Continues beep = %.1f sec" +
+                "> Min silent frames (between beeps) = %d frames\n" +
                 "> Max silent frames (between beeps) = %d frames\n\n" +
                 "> Min Amplitude for silent frame = %.2f\n" +
                 "> Max Amplitude for silent frame = %.2f\n\n" +
                 "> Repeat beeps = 3 times (by default)\n\n" +
                 "> Frequency Bandwidth = (+/-)100 Hz (by default value)\n" +
                 "> Frame Bandwidth = (+/-)4 frames (by default value)",
-                                              min_silent_frame, max_silent_frame, min_amplitude_silent, max_amplitude_silent
+                                              amplitude_beeps, min_beeps_frame, max_beeps_frame, continue_beep, min_silent_frame, max_silent_frame, min_amplitude_silent, max_amplitude_silent
             )
             
         case .telephone_ringing:
             cell.lbInfo1.stringValue = String(format: "%@\n", freq_str)
             
-            cell.lbInfo2.stringValue = String(format: "> Min beep frames = %d frames\n" +
+            cell.lbInfo2.stringValue = String(format: "(Universal Algorithm) for all sounds\n\n" +
+                "> Min beep frames = %d frames\n" +
                 "> Max beep frames = %d frames\n\n" +
                 "> Continues beep = %.1f sec" +
                 "> Min silent frames (between beeps) = %d frames\n" +
