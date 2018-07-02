@@ -154,8 +154,6 @@ extern int MAX_RECORD_FILECNT;
 extern RecordSoundType g_recordSoundType;
 extern DoorbellType g_doorbellType;
 
-extern std::vector<CDetectingData*> g_DetectData[RST_COUNT];
-
 extern const char* g_strDoorbellTypes[DT_COUNT];
 
 extern const float RECORD_START_THRESHOLD;

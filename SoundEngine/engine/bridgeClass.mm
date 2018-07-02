@@ -9,26 +9,20 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "bridgeClass.h"
-//#include "IosAudioController.h"
-#include "DetectingData.h"
+
 #include "globals.h"
 #include "RWBuffer.h"
 #include "DetectMgr.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/AudioServices.h>
 #import <AVFoundation/AVFoundation.h>
-//#import "AudioSessionManager.h"
 #import "Recorder.h"
-//#import <PebbleKit/PebbleKit.h>
-//#import "BraciPro-Swift.h"
-//#import "Sound_Alert-Swift.h"
 #import <mutex>
 
 std::mutex mtx;
 
 @implementation bridgeClass
 
-CDetectingData* m_curDetectingData;
 int ReturnAlarmType;
 bool APP_IS_BACKGROUND = IS_BACKGROUND;
 
@@ -346,20 +340,6 @@ int recRepeatCnt = 0;
 //    return MATCHING_RATE_THRESHOLD_DELTAS;
 //}
 
-+(void) initData : (NSString *) strDetectPath : (int32_t) soundType{
-    CDetectingData* detectData = new CDetectingData();
-    if (detectData->LoadDetectData([strDetectPath UTF8String])){
-        g_DetectData[ soundType].push_back(detectData);
-    }
-    else{
-        g_DetectData[soundType].clear();
-    }
-}
-
-+(int)get_g_DetectData : (int) nTotalCnt : (int) i {
-    nTotalCnt += g_DetectData[i].size();
-    return  nTotalCnt;
-}
 
 +(void)set_g_bDetected : (bool) value{
     g_bDetected = value;
@@ -390,14 +370,6 @@ int recRepeatCnt = 0;
 //    pController->play();
 }
 
-+(void)currentDetectionData{
-    m_curDetectingData = new CDetectingData();
-    if (g_recordSoundType == RST_Doorbell) {
-        m_curDetectingData->SetSoundType(g_doorbellType);
-    } else {
-        m_curDetectingData->SetSoundType(DT_GENERAL);
-    }
-}
 
 +(void)g_pDetectMgr_RecordStart:(NSViewController *)controller :(NSString *)w_strRecordPath{
     g_pDetectMgr->RecordStart((const char*)([w_strRecordPath UTF8String]), RecordingCallback, (__bridge void*)controller);
@@ -440,17 +412,6 @@ void RecordingCallback(void* p_obj, int p_nType, int p_nParam)
     return w_pRecordFilePath;
 }
 
-+(bool) m_curDetectingData_AddProcessData : (NSString *)w_strRecordPath{
-    bool bRecord = m_curDetectingData->AddProcessData((const char *)[w_strRecordPath UTF8String]);
-    return bRecord;
-}
-
-+(void) saveRecordedData : (int) g_recordSoundType{
-    NSString* strDetectPath = [self getDetectPath1:@"Home Mode" recordSoundType:g_recordSoundType];
-    m_curDetectingData->SaveDetectData([strDetectPath UTF8String]);
-    g_DetectData[ g_recordSoundType].push_back(m_curDetectingData);
-}
-
 +(NSString*)getDetectPath1:(NSString*)mode recordSoundType:(int)p_soundType
 {
     NSArray* w_pArrDirs = NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES);
@@ -485,19 +446,6 @@ void RecordingCallback(void* p_obj, int p_nType, int p_nParam)
     return [NSString stringWithFormat:@"%@/detect%d.wav", w_pStrSoundDetectDir, 0];
 }
 
-
-+(bool) m_curDetecting_Data_GetRecordedCnt{
-    if (m_curDetectingData->GetRecordedCnt() == MAX_RECORD_TIMES)
-        return true;
-    else
-        return false;
-}
-+(bool) m_curDetecting_ExtractDetectingData{
-    if (m_curDetectingData->ExtractDetectingData())
-        return true;
-    else
-        return false;
-}
 
 +(BOOL)isDatFileExist:(int)type1{
     BOOL isFound=NO;
@@ -643,10 +591,6 @@ void RecordingCallback(void* p_obj, int p_nType, int p_nParam)
 +(void)detectionConftimation:(id)arr : (NSString *)status {
     
     NSArray *arrnotification = (NSArray *)arr;
-//    userNotificationLocal *notificationObj = [arrnotification objectAtIndex:0];
-//    [notificationObj setValue:status forKey:@"status"];
-//    Fault *error;
-//    userNotificationLocal *result = [[[[Backendless sharedInstance] data] of:[userNotificationLocal class]] save:notificationObj];
 }
 
 +(void)updateDetectionCountBackendLess : (id)result : (NSString *)count{

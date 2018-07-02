@@ -15,16 +15,12 @@
 		80002CA520BF240400A1AD0C /* MainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C7F20BF240400A1AD0C /* MainCell.swift */; };
 		80002CA620BF240400A1AD0C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8020BF240400A1AD0C /* MainVC.swift */; };
 		80002CA820BF240400A1AD0C /* bridgeClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8520BF240400A1AD0C /* bridgeClass.mm */; };
-		80002CA920BF240400A1AD0C /* DetectingData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8720BF240400A1AD0C /* DetectingData.mm */; };
 		80002CAA20BF240400A1AD0C /* DetectMgr.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8920BF240400A1AD0C /* DetectMgr.mm */; };
 		80002CAB20BF240400A1AD0C /* Engine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8B20BF240400A1AD0C /* Engine.mm */; };
 		80002CAC20BF240400A1AD0C /* FFT.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C8E20BF240400A1AD0C /* FFT.mm */; };
 		80002CAD20BF240400A1AD0C /* FourierTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9020BF240400A1AD0C /* FourierTransform.mm */; };
 		80002CAE20BF240400A1AD0C /* globals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9120BF240400A1AD0C /* globals.cpp */; };
-		80002CAF20BF240400A1AD0C /* NSObject+testBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9520BF240400A1AD0C /* NSObject+testBridge.m */; };
-		80002CB020BF240400A1AD0C /* ProcessData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9720BF240400A1AD0C /* ProcessData.mm */; };
 		80002CB120BF240400A1AD0C /* Recorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9920BF240400A1AD0C /* Recorder.m */; };
-		80002CB220BF240400A1AD0C /* SharedInstance.m in Sources */ = {isa = PBXBuildFile; fileRef = 80002C9C20BF240400A1AD0C /* SharedInstance.m */; };
 		80002CB320BF240400A1AD0C /* FileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80002CA120BF240400A1AD0C /* FileInfo.swift */; };
 		80002CB620BF240400A1AD0C /* AudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB520BF240400A1AD0C /* AudioKit.framework */; };
 		80002CB820BF240400A1AD0C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80002CB720BF240400A1AD0C /* AudioToolbox.framework */; };
@@ -45,29 +41,19 @@
 		80002C8020BF240400A1AD0C /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		80002C8420BF240400A1AD0C /* bridgeClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridgeClass.h; sourceTree = "<group>"; };
 		80002C8520BF240400A1AD0C /* bridgeClass.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = bridgeClass.mm; sourceTree = "<group>"; };
-		80002C8620BF240400A1AD0C /* DetectingData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectingData.h; sourceTree = "<group>"; };
-		80002C8720BF240400A1AD0C /* DetectingData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DetectingData.mm; sourceTree = "<group>"; };
 		80002C8820BF240400A1AD0C /* DetectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectMgr.h; sourceTree = "<group>"; };
 		80002C8920BF240400A1AD0C /* DetectMgr.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DetectMgr.mm; sourceTree = "<group>"; };
 		80002C8A20BF240400A1AD0C /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
 		80002C8B20BF240400A1AD0C /* Engine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Engine.mm; sourceTree = "<group>"; };
-		80002C8C20BF240400A1AD0C /* engineHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engineHeader.h; sourceTree = "<group>"; };
 		80002C8D20BF240400A1AD0C /* FFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFT.h; sourceTree = "<group>"; };
 		80002C8E20BF240400A1AD0C /* FFT.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFT.mm; sourceTree = "<group>"; };
 		80002C8F20BF240400A1AD0C /* FourierTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FourierTransform.h; sourceTree = "<group>"; };
 		80002C9020BF240400A1AD0C /* FourierTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FourierTransform.mm; sourceTree = "<group>"; };
 		80002C9120BF240400A1AD0C /* globals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = globals.cpp; sourceTree = "<group>"; };
 		80002C9220BF240400A1AD0C /* globals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = globals.h; sourceTree = "<group>"; };
-		80002C9320BF240400A1AD0C /* IAudioDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioDriver.h; sourceTree = "<group>"; };
-		80002C9420BF240400A1AD0C /* NSObject+testBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+testBridge.h"; sourceTree = "<group>"; };
-		80002C9520BF240400A1AD0C /* NSObject+testBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+testBridge.m"; sourceTree = "<group>"; };
-		80002C9620BF240400A1AD0C /* ProcessData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessData.h; sourceTree = "<group>"; };
-		80002C9720BF240400A1AD0C /* ProcessData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProcessData.mm; sourceTree = "<group>"; };
 		80002C9820BF240400A1AD0C /* Recorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Recorder.h; sourceTree = "<group>"; };
 		80002C9920BF240400A1AD0C /* Recorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Recorder.m; sourceTree = "<group>"; };
 		80002C9A20BF240400A1AD0C /* RWBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWBuffer.h; sourceTree = "<group>"; };
-		80002C9B20BF240400A1AD0C /* SharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedInstance.h; sourceTree = "<group>"; };
-		80002C9C20BF240400A1AD0C /* SharedInstance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedInstance.m; sourceTree = "<group>"; };
 		80002C9D20BF240400A1AD0C /* ulib_basedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ulib_basedef.h; sourceTree = "<group>"; };
 		80002C9E20BF240400A1AD0C /* ulib_criticalsection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ulib_criticalsection.h; sourceTree = "<group>"; };
 		80002C9F20BF240400A1AD0C /* ulib_isync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ulib_isync.h; sourceTree = "<group>"; };
@@ -143,29 +129,19 @@
 			children = (
 				80002C8420BF240400A1AD0C /* bridgeClass.h */,
 				80002C8520BF240400A1AD0C /* bridgeClass.mm */,
-				80002C8620BF240400A1AD0C /* DetectingData.h */,
-				80002C8720BF240400A1AD0C /* DetectingData.mm */,
 				80002C8820BF240400A1AD0C /* DetectMgr.h */,
 				80002C8920BF240400A1AD0C /* DetectMgr.mm */,
 				80002C8A20BF240400A1AD0C /* Engine.h */,
 				80002C8B20BF240400A1AD0C /* Engine.mm */,
-				80002C8C20BF240400A1AD0C /* engineHeader.h */,
 				80002C8D20BF240400A1AD0C /* FFT.h */,
 				80002C8E20BF240400A1AD0C /* FFT.mm */,
 				80002C8F20BF240400A1AD0C /* FourierTransform.h */,
 				80002C9020BF240400A1AD0C /* FourierTransform.mm */,
 				80002C9120BF240400A1AD0C /* globals.cpp */,
 				80002C9220BF240400A1AD0C /* globals.h */,
-				80002C9320BF240400A1AD0C /* IAudioDriver.h */,
-				80002C9420BF240400A1AD0C /* NSObject+testBridge.h */,
-				80002C9520BF240400A1AD0C /* NSObject+testBridge.m */,
-				80002C9620BF240400A1AD0C /* ProcessData.h */,
-				80002C9720BF240400A1AD0C /* ProcessData.mm */,
 				80002C9820BF240400A1AD0C /* Recorder.h */,
 				80002C9920BF240400A1AD0C /* Recorder.m */,
 				80002C9A20BF240400A1AD0C /* RWBuffer.h */,
-				80002C9B20BF240400A1AD0C /* SharedInstance.h */,
-				80002C9C20BF240400A1AD0C /* SharedInstance.m */,
 				80002C9D20BF240400A1AD0C /* ulib_basedef.h */,
 				80002C9E20BF240400A1AD0C /* ulib_criticalsection.h */,
 				80002C9F20BF240400A1AD0C /* ulib_isync.h */,
@@ -267,13 +243,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				80002CA420BF240400A1AD0C /* Graph.swift in Sources */,
-				80002CB220BF240400A1AD0C /* SharedInstance.m in Sources */,
 				80002CAC20BF240400A1AD0C /* FFT.mm in Sources */,
-				80002CB020BF240400A1AD0C /* ProcessData.mm in Sources */,
 				80002CAB20BF240400A1AD0C /* Engine.mm in Sources */,
 				80002CAD20BF240400A1AD0C /* FourierTransform.mm in Sources */,
-				80002CAF20BF240400A1AD0C /* NSObject+testBridge.m in Sources */,
-				80002CA920BF240400A1AD0C /* DetectingData.mm in Sources */,
 				80002CAE20BF240400A1AD0C /* globals.cpp in Sources */,
 				80002CAA20BF240400A1AD0C /* DetectMgr.mm in Sources */,
 				80002CA620BF240400A1AD0C /* MainVC.swift in Sources */,

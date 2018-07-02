@@ -2,7 +2,6 @@
 
 #include "FFT.h"
 #include <vector>
-#include "DetectingData.h"
 
 typedef void (*LPFUNC_RECORDING)(void*, int, int);
 
@@ -29,10 +28,6 @@ public:
     
 private:
 
-	bool CheckMatched(CDetectingData* p_DetectData, bool bMachineSound, float p_fMatchThreshold = -1.0f);
-  
-	int GetMatchedCount(float* p_fVals, std::vector<AmpInfo>* p_lstDetectAmpInfos, float p_fThreshold, bool bMachineSound);
-    
     void Recording(float* pVals);
     
     void ResetFrameInfo();

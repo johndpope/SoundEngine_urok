@@ -1,15 +1,11 @@
 #include "globals.h"
 #include "DetectMgr.h"
-#include "IAudioDriver.h"
 
 float MATCH_RATE_THRESHOLD = 0.90f;
 int MAX_RECORD_FILECNT = 51;
 
 RecordSoundType g_recordSoundType;
 DoorbellType g_doorbellType;
-
-std::vector<CDetectingData*> g_DetectData[RST_COUNT];
-
 
 
 const int MAX_RECORD_FRAMES[RST_COUNT] = {

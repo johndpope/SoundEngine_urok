@@ -10,7 +10,7 @@
    
    @brief
    
-    읽기쓰기 완충기
+    Read/Write Buffer
 */
 
 #pragma once
@@ -41,11 +41,11 @@ public:
 	}
 
 	/**
-	  @breif 완충기 바이트수를 지정하여 초기화
+	  @breif Initialize buffer with its size
 	*/
 	bool Init( int p_nBufSize )
 	{
-		// 외부완충기를 리용하는 방식으로 이미 초기화된 경우에는 실패
+		// if external buffer mode, fails.
 		if(m_externalMode == true)
 			return false;
 
@@ -65,24 +65,7 @@ public:
 		return true;
 	}
 
-	/**
-	  @breif 외부에서 정보를 모두 지정하여 초기화
-	  외부에서 완충기를 지적하여 RingBuffer를 구현할때 사용할수 있다.
-	  주의: 이 함수를 사용하여 초기화한후에 완충기 크기만을 지정하여 
-	  초기화하는 함수를 호출하면 실패한다.
-	*/
-	bool Init( char* p_buf, int p_bufSize, int p_readPos, int p_writePos )
-	{
-		m_pcBuffer = p_buf;
-		m_pfBuffer = (float*)m_pcBuffer;
-		m_nBufSize = p_bufSize;
-		m_nReadPos = p_readPos;
-		m_nWritePos = p_writePos;
-		m_pSync = nullptr;
 
-		m_externalMode = true;
-		return false;
-	}
 	void GetCurPosition(int* p_readPos, int* p_writePos)
 	{
 		if(m_pSync) m_pSync->Enter();
@@ -92,8 +75,8 @@ public:
 	}
 
 	/**
-	  @breif 읽기 위치와 쓰기 위치의 초기화
-	  전공간이 쓰기 가능한 공간으로되며 읽기공간은 0으로 된다.
+	  @breif Reset read and write position
+	  All buffer will be writable.
 	*/
 	void Reset()
 	{
@@ -105,10 +88,10 @@ public:
 	}
 
 	/**
-	   완충기에 자료를 쓴다.
+	   Write data to the buffer.
    
-	   @param p_pData - 쓰려는 자료. NULL이면 지적한 바이트수만큼 0을 쓴다.
-	   @param p_nBytes - 쓰려는 자료바이트수
+	   @param p_pData - data to write,  if it is null, fill zero with count of bytes indicated as a parameter
+	   @param p_nBytes - Count of bytes
 	   @return true/false
 	   @warning 
 	*/
@@ -126,7 +109,7 @@ public:
 			int nRemain = m_nBufSize - m_nWritePos;
 			if(nRemain >= p_nBytes)
 			{
-				// 현재 쓰기 위치로부터 완충기의 끝까지 령역이 충분하다.
+				// enable to write whole data once
 				if(p_pData)
 					memcpy(m_pcBuffer + m_nWritePos, p_pData, p_nBytes);
 				else
@@ -135,7 +118,7 @@ public:
 			}
 			else
 			{
-				// 완충기의 마지막까지 쓰고 시작부분에 더 써야 하는 상태
+				// write some data to the end, and write remainted data from the start.
 				if(p_pData)
 					memcpy(m_pcBuffer + m_nWritePos, p_pData, nRemain);
 				else
@@ -153,7 +136,7 @@ public:
 		}
 		else
 		{
-			// 현재 쓰기 위치로부터 읽기 위치 전까지 령역이 충분하다.
+			// enable to write whole data once
 			if(p_pData)
 				memcpy(m_pcBuffer + m_nWritePos, p_pData, p_nBytes);
 			else
@@ -167,10 +150,10 @@ public:
 	}
 
 	/**
-	   완충기에서 자료를 읽는다.
+	   Read data from the buffer
    
-	   @param p_pData - 자료를 읽어낼 완충기.
-	   @param p_nBytes - 읽으려는 자료바이트수
+	   @param p_pData - data container to read buffer.
+	   @param p_nBytes - count of bytes
 	   @return true/false
 	   @warning 
 	*/
@@ -185,7 +168,7 @@ public:
 
 		if (false && m_nWritePos >= m_nReadPos)
 		{
-			// 현재 읽기 위치로부터 쓰기위치 전까지 령역이 충분하다.
+			// enable to read whole data once
 			if(p_pData)
 			{
 				memcpy(p_pData, m_pcBuffer + m_nReadPos, p_nBytes);
@@ -197,7 +180,7 @@ public:
 			int nRemain = m_nBufSize - m_nReadPos;
 			if(nRemain >= p_nBytes)
 			{
-				// 현재 쓰기 위치로부터 완충기의 끝까지 령역이 충분하다.
+				// enable to read whole data once
 				if(p_pData)
 				{
 					memcpy(p_pData, m_pcBuffer + m_nReadPos, p_nBytes);
@@ -206,7 +189,7 @@ public:
 			}
 			else
 			{
-				// 완충기의 마지막까지 읽고 시작부분에서 더 읽어야 하는 상태
+				// read some data to the end, and read remained data from the start
 				if(p_pData)
 				{
 					memcpy(p_pData, m_pcBuffer + m_nReadPos, nRemain);
@@ -227,10 +210,10 @@ public:
 	}
 
 	/**
-	   쓰기 가능한 빈 공간의 바이트수를 얻는다.
-	   읽기 위치와 쓰기위치가 동일한 경우 완충기크기 만큼이 쓸수 있는 공간으로 된다.
+	   Get count of bytes which is writable
+       When read position equals with write position, all buffer will be writable.
    
-	   @return 쓰기 가능한 빈 공간의 바이트수
+	   @return count of bytes to write
 	   @warning 
 	*/
 	int GetWriteSpace()
@@ -253,10 +236,10 @@ public:
 	}
 
 	/**
-	   읽기 가능한 자료의 바이트수를 얻는다.
-	   읽기 위치와 쓰기위치가 동일한 경우 0을 귀환
+	   Get count of bytes which is readable
+	   When read position equals with write position, return 0
    
-	   @return 읽기 가능한 자료의 바이트수
+	   @return count of bytes to read
 	   @warning 
 	*/
 	int GetReadSpace()

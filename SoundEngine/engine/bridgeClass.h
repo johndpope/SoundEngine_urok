@@ -46,7 +46,6 @@
 +(void) set_UNIVERSAL_THRESHOLD_DELTA : (NSString *) strKey;
 +(int) get_UNIVERSAL_THRESHOLD_DELTA;
 +(void) initData : (NSString *) strDetectPath : (int32_t) soundType;
-+(int)get_g_DetectData : (int) nTotalCnt : (int) i;
 +(void)set_g_bDetected : (bool) value;
 +(bool)set_pController;
 +(bool)set_pController_isOpen;
@@ -59,8 +58,6 @@
 +(void) saveRecordedData : (int) g_recordSoundType;
 +(NSString*)getDetectPath1:(NSString*)mode recordSoundType:(int)p_soundType;
 +(NSString*)getDetectRootPath:(NSString*)mode recordSoundType:(int)p_soundType;
-+(bool) m_curDetectingData_AddProcessData : (NSString *)w_strRecordPath;
-+(bool) m_curDetecting_Data_GetRecordedCnt;
 +(bool) m_curDetecting_ExtractDetectingData;
 +(int)globalsMethodVarible_get_g_pDetectMgr_alarmType;
 +(BOOL)isDatFileExist:(int)type1;
