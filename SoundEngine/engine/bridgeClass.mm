@@ -185,12 +185,14 @@ int recRepeatCnt = 0;
         g_fRecBuf = nullptr;
     }
 }
-+(NSArray *)get_g_pDetectMgr_ProcessRec {
-    return [bridgeClass get_g_pDetectMgr_ProcessFile:g_fRecBuf :g_nRecTotalSize :recBufferSize :recFreqFrame :recThreshold :recBandWidth :recRepeatCnt];
++(void)get_g_pDetectMgr_ProcessRec {
+    [bridgeClass get_g_pDetectMgr_ProcessFile:g_fRecBuf :g_nRecTotalSize :recBufferSize :recFreqFrame :recThreshold :recBandWidth :recRepeatCnt];
 }
 
-+(NSArray *)get_g_pDetectMgr_ProcessFile : (float *) buffData : (int) totalLen : (int) frameLen : (int) freqFrame : (int) threshold : (int) bandWidth : (int) repeatCnt {
-    NSMutableArray *arr = [[NSMutableArray alloc] init];
++(void)get_g_pDetectMgr_ProcessFile : (float *) buffData : (int) totalLen : (int) frameLen : (int) freqFrame : (int) threshold : (int) bandWidth : (int) repeatCnt {
+    if (g_pDetectMgr == nil) {
+        return;
+    }
     
     int nFrameCnt = totalLen / frameLen;
     g_pDetectMgr->initFreqVal(nFrameCnt);
@@ -219,61 +221,7 @@ int recRepeatCnt = 0;
             g_pDetectMgr->m_fMaxFreqs[j][i] = fMaxFreqs[j];
             g_pDetectMgr->m_fMaxVals[j][i] = fMaxVals[j];
         }
-        
-        for (int j = 0; j < MAX_FREQ_CNT - 1; j++) {
-            float freq1 = fMaxFreqs[j];
-            
-            for (int k = j + 1; k < MAX_FREQ_CNT; k++) {
-                float freq2 = fMaxFreqs[k];
-                
-                if (freq1 >= freq2 - bandWidth && freq1 <= freq2 + bandWidth) {
-                    fMaxFreqs[k] = (fMaxFreqs[j] + fMaxFreqs[k]) / 2;
-                    fMaxFreqs[j] = 0;
-                }
-            }
-        }
-        
-        for (int j = 0; j < freqFrame; j++) {
-            float freq = fMaxFreqs[j];
-            if (freq == 0) continue;
-            
-            bool bFound = false;
-            int idx = -1;
-            for (int k = 0; k < arr.count; k++) {
-                NSMutableArray* item_arr = arr[k];
-                float val = [[item_arr objectAtIndex:0] floatValue];
-                if (freq < val - bandWidth) {
-                    break;
-                } else if (freq > val + bandWidth) {
-                    idx = k;
-                } else {
-                    int cnt = [[item_arr objectAtIndex:1] intValue];
-                    int freq1 = ([[item_arr objectAtIndex:0] floatValue] * cnt + freq) / (cnt + 1);
-                    cnt = (cnt + 1);
-                    
-                    [item_arr removeAllObjects];
-                    [item_arr addObject:@(freq1)];
-                    [item_arr addObject:@(cnt)];
-                    
-                    bFound = true;
-                    break;
-                }
-            }
-            
-            if (!bFound) {
-                [arr insertObject:[[NSMutableArray alloc] initWithArray:@[@((int)freq), @(1)]] atIndex:idx + 1];
-            }
-        }
     }
-    
-    for (int i = (int)arr.count - 1; i >= 0; i--) {
-        int cnt = [[[arr objectAtIndex:i] objectAtIndex:1] intValue];
-        if (cnt <= repeatCnt) {
-            [arr removeObjectAtIndex:i];
-        }
-    }
-    
-    return arr;
 }
 
 +(int)globalsMethodVarible_get_g_pDetectMgr_alarmType {

@@ -32,6 +32,8 @@ typedef struct MyRecorder {
     MyPlayer    *player;
 } MyRecorder;
 
+short tmpRecBuf[4096];
+int nRemainedSample = 0;
 
 @implementation Recorder : NSObject
 
@@ -159,6 +161,7 @@ void CalculateBytesForPlaythrough(AudioQueueRef queue,
 
 #pragma mark - Record callback function
 
+
 static void MyAQInputCallback(void *inUserData,
                               AudioQueueRef inQueue,
                               AudioQueueBufferRef inBuffer,
@@ -169,7 +172,7 @@ static void MyAQInputCallback(void *inUserData,
     //NSLog(@"Input callback");
     //NSLog(@"Input thread = %@",[NSThread currentThread]);
     MyRecorder *recorder = (MyRecorder *)inUserData;
-    MyPlayer *player = recorder->player;
+//    MyPlayer *player = recorder->player;
     
     
     
@@ -192,26 +195,55 @@ static void MyAQInputCallback(void *inUserData,
         int total_size = bridgeClass.get_recBuf_total_size;
         int pos = bridgeClass.get_recBuf_pos;
         
-        //bridgeClass.mu
+        if (nRemainedSample > 0) {
+            //bridgeClass.mu
+            if (pos + nRemainedSample > total_size) {
+                int start = pos + nRemainedSample - total_size;
+                memcpy(buf, &buf[start], (pos - start) * sizeof(float));
+                
+                for (int i = 0; i < nRemainedSample; i++) {
+                    buf[pos - start + i] = tmpRecBuf[i] / 32768.0f;
+                }
+                [bridgeClass set_recBuf_pos:total_size];
+            } else {
+                for (int i = 0; i < nRemainedSample; i++) {
+                    buf[pos + i] = tmpRecBuf[i] / 32768.0f;
+                }
+                pos += nRemainedSample;
+                [bridgeClass set_recBuf_pos:pos];
+            }
+        }
         
-        if (pos + inNumPackets > total_size) {
-            int start = pos + inNumPackets - total_size;
+        
+        int sampleCnt = ((inNumPackets + nRemainedSample) / 2048) * 2048 - nRemainedSample;
+        nRemainedSample = inNumPackets - sampleCnt;
+
+        pos = bridgeClass.get_recBuf_pos;
+        char* audioBuf = (char*)inBuffer->mAudioData;
+        
+        //bridgeClass.mu
+        if (pos + sampleCnt > total_size) {
+            int start = pos + sampleCnt - total_size;
             memcpy(buf, &buf[start], (pos - start) * sizeof(float));
             
-            char* audioBuf = (char*)inBuffer->mAudioData;
-            for (int i = 0; i < inNumPackets; i++) {
+            for (int i = 0; i < sampleCnt; i++) {
                 short value = (short)(audioBuf[i*2] << 8 | audioBuf[i*2 + 1]);
                 buf[pos - start + i] = value / 32768.0f;
             }
             [bridgeClass set_recBuf_pos:total_size];
         } else {
-            char* audioBuf = (char*)inBuffer->mAudioData;
-            for (int i = 0; i < inNumPackets; i++) {
+            
+            for (int i = 0; i < sampleCnt; i++) {
                 short value = (short)(audioBuf[i*2] << 8 | audioBuf[i*2 + 1]);
                 buf[pos + i] = value / 32768.0f;
             }
-            pos += inNumPackets;
+            pos += sampleCnt;
             [bridgeClass set_recBuf_pos:pos];
+        }
+        
+        for (int i = sampleCnt; i < inNumPackets; i++) {
+            short value = (short)(audioBuf[i*2] << 8 | audioBuf[i*2 + 1]);
+            tmpRecBuf[i - sampleCnt] = value;
         }
     }
     
@@ -246,6 +278,8 @@ static void MyAQOutputCallback(void *inUserData, AudioQueueRef inAQ, AudioQueueB
 +(void)record: (int)channelsPerFrame : (int)bitsPerChannel {
     @autoreleasepool {
     
+        nRemainedSample = 0;
+        
     MyRecorder recorder = {0};
     MyPlayer player = {0};
     
@@ -266,6 +300,8 @@ static void MyAQOutputCallback(void *inUserData, AudioQueueRef inAQ, AudioQueueB
     // end my changes
     
     MyGetDefaultInputDeviceSampleRate(&recordFormat.mSampleRate);
+    recordFormat.mSampleRate = 44100;
+        
     
     
     UInt32 propSize = sizeof(recordFormat);

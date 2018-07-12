@@ -29,8 +29,8 @@
 +(void)RecStart : (int) p_micDetectionTime : (int) p_micThreshold : (int) p_recMode : (int) p_recFreqFrame : (int) p_recThreshold : (int) p_recBandWidth : (int) p_recRepeatCnt;
 +(void)RecStop;
 
-+(NSArray *)get_g_pDetectMgr_ProcessRec;
-+(NSArray *)get_g_pDetectMgr_ProcessFile : (float *) buffData : (int) totalLen : (int) frameLen : (int) freqFrame : (int) threshold : (int) bandWidth : (int) repeatCnt;
++(void)get_g_pDetectMgr_ProcessRec;
++(void)get_g_pDetectMgr_ProcessFile : (float *) buffData : (int) totalLen : (int) frameLen : (int) freqFrame : (int) threshold : (int) bandWidth : (int) repeatCnt;
 +(NSArray *)get_max_freqs_vals :(int)idx : (int)cnt;
 +(NSArray *)get_other_results;
 +(NSArray *)get_impulse_vals;

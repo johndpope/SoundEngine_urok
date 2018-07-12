@@ -25,6 +25,11 @@ class MainCell: NSTableCellView {
     
     @IBOutlet var tvOrderList: NSTableView!
     
+    
+    var mBuffer : Int = 0
+    var mBandWidth : Int = 0
+    var mRepeatCnt : Int = 0
+    
     var data : FileInfo!
     
     var graph1 : Graph?
@@ -80,10 +85,27 @@ extension MainCell: NSTableViewDataSource, NSTableViewDelegate {
             data!.freq_order_visible[idx] = sender.state == .on
         }
         
+        let dic = data.getFrequencies(freqOrders: data.freq_order_visible, bufferSize: mBuffer, bandWidth: mBandWidth, repeatCnt: mRepeatCnt)
+        
+        var freq = "", repeatation = ""
+        
+        for i in 0..<dic.count {
+            let freq_val = dic[i][0]
+            let repeat_val = dic[i][1]
+            
+            freq += String(format: "Frequency (%d) = %d Hz\n", i + 1, freq_val)
+            repeatation += String(format: "Frequency (%d) = %d times\n", i + 1, repeat_val)
+        }
+        freq = String(freq.dropLast())
+        repeatation = String(repeatation.dropLast())
+        
+        lbFreq.stringValue = freq
+        lbRepeat.stringValue = repeatation
+        
         graph1!.checkedList = data!.freq_order_visible
-        let rc = NSRect(x: 0, y: 0, width: graph1!.frame.width, height: graph1!.frame.height)
-//        graph1!.setNeedsDisplay(rc)
+        graph1!.freq_data_to_show = dic
         graph1!.display()
+
     }
     
 }

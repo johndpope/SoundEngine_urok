@@ -176,10 +176,26 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         }
     }
     
-    func processAudio(_ dic : [[Int]], info: FileInfo, max_len : Int) {
+    func processAudio(info: FileInfo, max_len : Int) {
         var long_frame = 0
         var long_freq = 0
         var max_freq = 0, min_freq = 0
+        
+        let dic_max = bridgeClass.get_max_freqs_vals(0, Int32(max_len / self.mBuffer)) as! [[Int]]
+        
+        info.max_freq_val_data.removeAll()
+        info.max_freq_val_data.append(dic_max)
+        for idx in 1..<MAX_FREQ_ORDER {
+            let dic_max1 = bridgeClass.get_max_freqs_vals(Int32(idx), Int32(max_len / self.mBuffer)) as! [[Int]]
+            info.max_freq_val_data.append(dic_max1)
+        }
+        
+        info.freq_order_visible.removeAll()
+        for i in 0..<mFreqFrame {
+            info.freq_order_visible.append(true)
+        }
+        
+        let dic = info.getFrequencies(freqOrders: info.freq_order_visible, bufferSize: mBuffer, bandWidth: mBandWidth, repeatCnt: mRepeatCnt)
         
         for item in dic {
             if long_frame < item[1] {
@@ -190,8 +206,6 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             max_freq = max(max_freq, item[0])
             min_freq = min_freq == 0 ? item[0] : min(min_freq, item[0])
         }
-        
-        let dic_max = bridgeClass.get_max_freqs_vals(0, Int32(max_len / self.mBuffer)) as! [[Int]]
         
         var strong_freq = 0, max_amp_of_freq = 0
         for item in dic_max {
@@ -205,13 +219,6 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         info.long_freq = long_freq
         info.max_amp_of_freq = max_amp_of_freq
         
-        info.max_freq_val_data.removeAll()
-        info.max_freq_val_data.append(dic_max)
-        for idx in 1..<MAX_FREQ_ORDER {
-            let dic_max1 = bridgeClass.get_max_freqs_vals(Int32(idx), Int32(max_len / self.mBuffer)) as! [[Int]]
-            info.max_freq_val_data.append(dic_max1)
-        }
-        
         info.freq_data = dic
         
         info.total_frames = 0
@@ -219,11 +226,6 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         for i in 0..<info.freq_data.count {
             let repeat_val = info.freq_data[i][1]
             info.total_frames += repeat_val
-        }
-        
-        info.freq_order_visible.removeAll()
-        for i in 0..<mFreqFrame {
-            info.freq_order_visible.append(true)
         }
         
         if mSoundType == .doorbell { //. ding & dong
@@ -322,21 +324,20 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
                 
                 if !isValid {
                     if set_nonzero {
-                        set_nonzero = false
-                        end_nonzero = i
-                        set_zero = true
+                        if (set_zero) {
+                            set_nonzero = false
+                            end_nonzero = i - 1
+                            start_zero = i - 1
+                        }
                         zero_cnt += 1
-                        start_zero = i
                     } else if !set_zero {
-                        set_zero = true
                         zero_cnt += 1
                         start_zero = i
                     }
+                    set_zero = true
                 } else {
-                    if set_zero {
-                        set_zero = false
+                    if !set_nonzero {
                         end_zero = i
-                        set_nonzero = true
                         nonzero_cnt += 1
                         
                         if nonzero_cnt == chk_cnt {
@@ -349,6 +350,9 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
                         continue_ok = true
                         end_nonzero = i
                     }
+                    
+                    set_zero = false
+                    set_nonzero = true
                 }
             }
             
@@ -428,11 +432,13 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         
         bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(file!.sampleRate), Int32(self.mBuffer))
         
-        let dic = bridgeClass.get_g_pDetectMgr_ProcessFile(
+        bridgeClass.get_g_pDetectMgr_ProcessFile(
             data[0], Int32(max_len), Int32(self.mBuffer), Int32(mFreqFrame),
-            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))! as! [[Int]]
+            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))
         
-        processAudio(dic, info: info, max_len: max_len)
+        info.max_len = max_len
+        info.sample_rate = Int(file!.sampleRate)
+        processAudio(info: info, max_len: max_len)
         
         //. histogram
         var histogram_data = [Float](repeating: 0, count: max_len)
@@ -452,9 +458,9 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
     
     @objc func updateRecInfo() {
         let max_len = mRate * mMicTime
-        let dic = bridgeClass.get_g_pDetectMgr_ProcessRec()! as! [[Int]]
+        bridgeClass.get_g_pDetectMgr_ProcessRec()
         
-        let dic_impulse = bridgeClass.get_impulse_vals() as! [Int]
+//        let dic_impulse = bridgeClass.get_impulse_vals() as! [Int]
 //        let graph = Graph(frame: vwImpuls.bounds)
 //        graph.band_width = mBandWidth
 //        graph.mType = .impulse
@@ -471,7 +477,9 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             info.file_name = "Recording..."
         }
         
-        processAudio(dic, info: info, max_len: max_len)
+        info.max_len = max_len
+        
+        processAudio(info: info, max_len: max_len)
         
         //. histogram
         var histogram_data = [Float](repeating: 0, count: max_len)
@@ -480,6 +488,7 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
             histogram_data[i] = tmp[i]
         }
         info.histogram = histogram_data
+        
         
         if exist {
             tvList.reloadData(forRowIndexes: IndexSet(integer: 0), columnIndexes: IndexSet(integer: 0))
@@ -506,9 +515,9 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         }
         
         bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(file!.sampleRate), Int32(self.mBuffer))
-        let dic = bridgeClass.get_g_pDetectMgr_ProcessFile(
+        bridgeClass.get_g_pDetectMgr_ProcessFile(
             data[0], Int32(max_len), Int32(self.mBuffer), Int32(self.mFrequencyOrder),
-            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))! as! [[Int]]
+            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))
 
         var frameCnt = max_len / self.mBuffer
         
@@ -516,8 +525,26 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         var startIdx = frameCnt - 1
         var endIdx = 0
         
+
+        info.max_len = max_len
+        let dic_max = bridgeClass.get_max_freqs_vals(0, Int32(max_len / self.mBuffer)) as! [[Int]]
+        
+        info.max_freq_val_data.removeAll()
+        info.max_freq_val_data.append(dic_max)
+        for idx in 1..<MAX_FREQ_ORDER {
+            let dic_max1 = bridgeClass.get_max_freqs_vals(Int32(idx), Int32(max_len / self.mBuffer)) as! [[Int]]
+            info.max_freq_val_data.append(dic_max1)
+        }
+        
+        info.freq_order_visible.removeAll()
+        for i in 0..<mFreqFrame {
+            info.freq_order_visible.append(true)
+        }
+        
+        let dic = info.getFrequencies(freqOrders: info.freq_order_visible, bufferSize: mBuffer, bandWidth: mBandWidth, repeatCnt: mRepeatCnt)
+        
         for order in 0..<mFrequencyOrder {
-            var dic_max = bridgeClass.get_max_freqs_vals(Int32(order), Int32(frameCnt)) as! [[Int]]
+            var dic_max = info.max_freq_val_data[order]
 
             // Remove unnecessary frequencies
             for i in 0..<frameCnt {
@@ -630,11 +657,11 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         
         bridgeClass.set_g_pDetectMgr_SAMPLE_FREQ(Int32(file!.sampleRate), Int32(self.mBuffer))
         
-        let dic = bridgeClass.get_g_pDetectMgr_ProcessFile(
+        bridgeClass.get_g_pDetectMgr_ProcessFile(
             soundData[0], Int32(max_len), Int32(self.mBuffer), Int32(mFrequencyOrder),
-            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))! as! [[Int]]
+            Int32(self.mThreshold), Int32(self.mBandWidth), Int32(self.mRepeatCnt))
         
-        processAudio(dic, info: data, max_len: max_len)
+        processAudio(info: data, max_len: max_len)
         
         bridgeClass.terminateEngine();
 
@@ -735,8 +762,8 @@ class MainVC: NSViewController, AVAudioPlayerDelegate {
         
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = true
-        panel.message = "Import one or more wav & mp3 files"
-        panel.allowedFileTypes = ["wav", "mp3"]
+        panel.message = "Import one or more wav files"
+        panel.allowedFileTypes = ["wav"]
         panel.beginSheetModal(for: window) { (res) in
             if res == NSApplication.ModalResponse.OK {
                 for url in panel.urls {
@@ -958,9 +985,11 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         var freq_list = [Int]()
         var repeat_list = [Int]()
         
-        for i in 0..<data.freq_data.count {
-            let freq_val = data.freq_data[i][0]
-            let repeat_val = data.freq_data[i][1]
+        let dic = data.getFrequencies(freqOrders: data.freq_order_visible, bufferSize: mBuffer, bandWidth: mBandWidth, repeatCnt: mRepeatCnt)
+            
+        for i in 0..<dic.count {
+            let freq_val = dic[i][0]
+            let repeat_val = dic[i][1]
             
             freq_list.append(freq_val)
             repeat_list.append(repeat_val)
@@ -970,9 +999,13 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         freq = String(freq.dropLast())
         repeatation = String(repeatation.dropLast())
         
+        cell.mBuffer = mBuffer
+        cell.mBandWidth = mBandWidth
+        cell.mRepeatCnt = mRepeatCnt
+        
         cell.data = data
         
-        cell.lbFile.stringValue = data.file_name
+        cell.lbFile.stringValue = data.file_name + "   -  " + String(data.sample_rate) + "Hz"
         cell.lbFreq.stringValue = freq
         cell.lbRepeat.stringValue = repeatation
         cell.lbTotal.stringValue = String(format: "%d Frames", data.total_frames)
@@ -982,10 +1015,12 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
         
         var etc_info = ""
         if mSoundType == .doorbell {
-            etc_info = String(format: "> Ding Frames %@ Dong Frames\n\n" +
+            etc_info = String(format: "> Ding Frames (%d) %@ Dong Frames (%d)\n\n" +
                 "> Ding Decreasing Amplitude = %@\n" +
                 "> Dong Decreasing Amplitude = %@",
-                              data.ding_frames > data.dong_freq ? ">" : "<",
+                              data.ding_frames,
+                              data.ding_frames > data.dong_frames ? ">" : "<",
+                              data.dong_frames,
                               data.ding_dec ? "Yes" : "No",
                               data.dong_dec ? "Yes" : "No"
             )
@@ -1019,9 +1054,9 @@ extension MainVC: NSTableViewDataSource, NSTableViewDelegate {
             
         } else if (mSoundType == .microwave_beeps || mSoundType == .oven_timer_beeps || mSoundType == .smoke_alarms) {
             
-            universal_engine += String(format: ">Frequency value = %d Hz\n" +
+            universal_engine += String(format: "> Frequency value = %d Hz\n" +
                 "> Bandwidth = %d Hz\n" +
-                "> eep frame = %d Frames\n" +
+                "> Beep frame = %d Frames\n" +
                 "> Silent frames = %d Frames\n\n", data.strong_freq, mBandWidth, data.beep_frames, data.silent_frames)
         }
         
